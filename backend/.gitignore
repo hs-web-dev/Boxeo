@@ -1,1 +1,26 @@
+# ENV
+.env
+.env.local
+.env.*.local
 
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build
+dist/
+build/
+.cache/
+
+# System
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
