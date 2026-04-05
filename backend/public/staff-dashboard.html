@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Staff - Boxeo</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #1e1f29;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #dcdcdc;
+            text-decoration: none;
+            padding: 12px 0;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            color: white;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 270px;
+            padding: 30px;
+            width: calc(100% - 270px);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Search bar */
+        .search-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background: #4a6cff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background: #3a55d1;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        table th {
+            background: #f0f2f7;
+        }
+
+        .btn-delete {
+            background: #ff4d4d;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: #d93636;
+        }
+
+        /* Autocomplétion */
+        #locationResults div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #locationResults div:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Boxeo Staff</h2>
+        <a href="#">🏠 Dashboard</a>
+        <a href="#">🚗 Garages</a>
+        <a href="#">👤 Utilisateurs</a>
+        <a href="#">📊 Statistiques</a>
+        <a href="#">⚙️ Paramètres</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+
+        <h1>Tableau de bord Staff</h1>
+        <p><strong>ID Staff :</strong> <span id="staff-id"></span></p>
+
+        <!-- GARAGES -->
+        <div class="card">
+            <h2>Gestion des garages</h2>
+
+            <div class="search-bar">
+                <input type="text" id="searchGarage" placeholder="Rechercher un garage...">
+                <button onclick="openGarageModal()">Créer un garage</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Capacité</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="garageTable"></tbody>
+            </table>
+        </div>
+
+        <!-- UTILISATEURS -->
+        <div class="card">
+            <h2>Gestion des utilisateurs</h2>
+
+            <div class="search-bar">
+                <input type="text" id="searchUser" placeholder="Rechercher par nom ou identité...">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Identité</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    <tr>
+                        <td>Hadrien</td>
+                        <td>hadrien@example.com</td>
+                        <td>ID-1235ABC</td>
+                    </tr>
+                    <tr>
+                        <td>Sarah</td>
+                        <td>sarah@example.com</td>
+                        <td>ID-9987XYZ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- MODALE CREATION GARAGE -->
+    <div id="garageModal" style="
+        display:none; 
+        position:fixed; 
+        top:0; left:0; width:100%; height:100%; 
+        background:rgba(0,0,0,0.5); 
+        justify-content:center; 
+        align-items:center;">
+        
+        <div style="background:white; padding:20px; border-radius:10px; width:350px;">
+            <h3>Créer un garage</h3>
+
+            <input id="gName" placeholder="Nom du garage" style="width:100%; margin-bottom:10px; padding:8px;">
+            <input id="gAddress" placeholder="Adresse" style="width:100%; margin-bottom:10px; padding:8px;">
+
+            <!-- Champ autocomplétion -->
+            <input id="gLocation" placeholder="Localisation (Paris, Lyon, 12 rue ...)" 
+                   oninput="searchLocation()" 
+                   style="width:100%; margin-bottom:10px; padding:8px;">
+
+            <div id="locationResults" 
+                 style="background:white; border:1px solid #ccc; border-radius:6px; display:none; max-height:150px; overflow-y:auto;">
+            </div>
+
+            <!-- Champs cachés -->
+            <input id="gLat" type="hidden">
+            <input id="gLng" type="hidden">
+
+            <input id="gCapacity" placeholder="Capacité" style="width:100%; margin-bottom:10px; padding:8px;">
+
+            <button onclick="submitGarage()" style="padding:10px 15px; background:#4a6cff; color:white; border:none; border-radius:6px;">Créer</button>
+            <button onclick="closeGarageModal()" style="padding:10px 15px; background:#ccc; border:none; border-radius:6px;">Annuler</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DASHBOARD -->
+    <script>
+        // ============================
+        //  ID STAFF DANS L’URL
+        // ============================
+        const params = new URLSearchParams(window.location.search);
+        const staffId = params.get("id");
+        document.getElementById("staff-id").textContent = staffId ?? "Aucun ID";
+
+
+        // ============================
+        //  MODALE CREATION GARAGE
+        // ============================
+        function openGarageModal() {
+            document.getElementById("garageModal").style.display = "flex";
+        }
+
+        function closeGarageModal() {
+            document.getElementById("garageModal").style.display = "none";
+        }
+
+
+        // ============================
+        //  AUTOCOMPLÉTION ADRESSE
+        // ============================
+        async function searchLocation() {
+            const query = document.getElementById("gLocation").value;
+
+            if (query.length < 3) {
+                document.getElementById("locationResults").style.display = "none";
+                return;
+            }
+
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+            const res = await fetch(url);
+            const results = await res.json();
+
+            const container = document.getElementById("locationResults");
+            container.innerHTML = "";
+            container.style.display = "block";
+
+            results.slice(0, 5).forEach(r => {
+                const item = document.createElement("div");
+                item.textContent = r.display_name;
+
+                item.onclick = () => {
+                    document.getElementById("gLocation").value = r.display_name;
+                    document.getElementById("gLat").value = r.lat;
+                    document.getElementById("gLng").value = r.lon;
+                    container.style.display = "none";
+                };
+
+                container.appendChild(item);
+            });
+        }
+
+
+        // ============================
+        //  CREATION GARAGE
+        // ============================
+        async function submitGarage() {
+            const garage = {
+                name: document.getElementById("gName").value,
+                address: document.getElementById("gAddress").value,
+                lat: parseFloat(document.getElementById("gLat").value),
+                lng: parseFloat(document.getElementById("gLng").value),
+                capacity: parseInt(document.getElementById("gCapacity").value)
+            };
+
+            const res = await fetch("/api/garages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(garage)
+            });
+
+            if (res.ok) {
+                alert("Garage créé !");
+                closeGarageModal();
+                loadGaragesInTable();
+            } else {
+                alert("Erreur lors de la création du garage");
+            }
+        }
+
+
+        // ============================
+        //  CHARGEMENT DES GARAGES
+        // ============================
+        async function loadGaragesInTable() {
+            const res = await fetch("/api/garages");
+            const garages = await res.json();
+
+            const table = document.getElementById("garageTable");
+            table.innerHTML = "";
+
+            garages.forEach(g => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${g.name}</td>
+                        <td>${g.address}</td>
+                        <td>${g.capacity}</td>
+                        <td>
+                            <button class="btn-delete" onclick="deleteGarage('${g._id}')">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        loadGaragesInTable();
+
+
+        // ============================
+        //  SUPPRESSION GARAGE
+        // ============================
+        async function deleteGarage(id) {
+            if (!confirm("Supprimer ce garage ?")) return;
+
+            const res = await fetch(`/api/garages/${id}`, {
+                method: "DELETE"
+            });
+
+            if (res.ok) {
+                alert("Garage supprimé !");
+                loadGaragesInTable();
+            } else {
+                alert("Erreur lors de la suppression");
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,39 +1,60 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import generateToken from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
 
-export async function register(req, res) {
+// REGISTER
+export const register = async (req, res) => {
     const { email, password } = req.body;
 
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Email déjà utilisé" });
+    try {
+        const exists = await User.findOne({ email });
+        if (exists) return res.json({ message: "Email déjà utilisé" });
 
-    const hashed = await bcrypt.hash(password, 10);
+        const hashed = await bcrypt.hash(password, 10);
+        const user = await User.create({ email, password: hashed });
 
-    const user = await User.create({ email, password: hashed });
+        const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET, {
+            expiresIn: "7d"
+        });
 
-    res.json({
-        message: "Compte créé",
-        token: generateToken(user)
-    });
-}
+        res.json({ message: "Compte créé ✔", token });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
 
-export async function login(req, res) {
+// LOGIN
+export const login = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Utilisateur introuvable" });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.json({ message: "Utilisateur introuvable" });
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ message: "Mot de passe incorrect" });
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.json({ message: "Mot de passe incorrect" });
 
-    res.json({
-        message: "Connexion réussie",
-        token: generateToken(user)
-    });
-}
+        const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET, {
+            expiresIn: "7d"
+        });
 
-export async function me(req, res) {
-    res.json({ id: req.user.id, email: req.user.email });
-}
+        res.json({ message: "Connexion réussie ✔", token });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
 
+// ME
+export const me = async (req, res) => {
+    res.json({ email: req.user.email });
+};
+
+// DELETE ACCOUNT
+export const deleteAccount = async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.user.id);
+        res.json({ message: "Compte supprimé avec succès" });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};

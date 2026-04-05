@@ -1,16 +1,40 @@
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-export default function auth(req, res, next) {
+// =========================
+//  PROTECT (auth obligatoire)
+// =========================
+export async function protect(req, res, next) {
     const header = req.headers.authorization;
-    if (!header) return res.status(401).json({ message: "Token manquant" });
+
+    if (!header || !header.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Token manquant" });
+    }
 
     const token = header.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+
+        const user = await User.findById(decoded.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur introuvable" });
+        }
+
+        req.user = user; // contient email, role, createdAt, id
         next();
-    } catch {
+    } catch (err) {
         res.status(401).json({ message: "Token invalide" });
     }
+}
+
+// =========================
+//  STAFF ONLY (admin)
+// =========================
+export function staffOnly(req, res, next) {
+    if (!req.user || req.user.role !== "staff") {
+        return res.status(403).json({ message: "Accès réservé au staff" });
+    }
+    next();
 }
