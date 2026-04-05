@@ -11,7 +11,10 @@ function closeLogin() {
     if (modal) modal.classList.remove("visible");
 }
 
-const API_URL = "http://localhost:3000/api/auth";
+// =========================
+//  API URL (BACKEND RENDER)
+// =========================
+const API_URL = "https://boxeo-backend.onrender.com/api";
 
 // =========================
 //  REGISTER
@@ -25,7 +28,7 @@ function register() {
         return;
     }
 
-    fetch(`${API_URL}/register`, {
+    fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -55,7 +58,7 @@ function login() {
         return;
     }
 
-    fetch(`${API_URL}/login`, {
+    fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -96,7 +99,7 @@ function checkLoginStatus() {
         return;
     }
 
-    fetch(`${API_URL}/me`, {
+    fetch(`${API_URL}/auth/me`, {
         method: "GET",
         headers: { "Authorization": "Bearer " + token }
     })
@@ -146,7 +149,7 @@ function deleteAccount() {
         return;
     }
 
-    fetch(`${API_URL}/delete`, {
+    fetch(`${API_URL}/auth/delete`, {
         method: "DELETE",
         headers: {
             "Authorization": "Bearer " + token
@@ -279,10 +282,9 @@ if (document.getElementById("map") && typeof L !== "undefined") {
 
     async function loadGaragesFromBackend() {
         try {
-            const res = await fetch("http://localhost:3000/api/garages");
+            const res = await fetch(`${API_URL}/garages`);
             garages = await res.json();
 
-            // On filtre les garages sans coordonnées valides
             garages = garages.filter(g => 
                 typeof g.lat === "number" && 
                 typeof g.lng === "number" &&
@@ -336,7 +338,6 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         });
     }
 
-    // Recharger les marqueurs au zoom (en gardant les filtres actuels)
     map.on("zoomend", () => {
         const searchInput = document.querySelector(".search-box input");
         const typeSelect = document.querySelector(".search-box select");
@@ -347,12 +348,8 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         afficherGarages(currentText, currentType);
     });
 
-    // Charger les garages au démarrage
     loadGaragesFromBackend();
 
-    // =========================
-    //  RECHERCHE
-    // =========================
     const searchInput = document.querySelector(".search-box input");
     const typeSelect = document.querySelector(".search-box select");
     const searchBtn = document.getElementById("searchBtn");
