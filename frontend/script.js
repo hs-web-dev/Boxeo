@@ -14,7 +14,7 @@ function closeLogin() {
 // =========================
 //  API URL (BACKEND RENDER)
 // =========================
-const API_URL = "https://boxeo-backend.onrender.com/api";
+const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
 //  REGISTER

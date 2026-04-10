@@ -1,1 +1,78 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boxeo – Location de garages à Paris</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+    <header>
+        <div class="logo">BOXEO</div>
+
+        <div class="user-info">
+            <span id="userStatus">Non connecté</span>
+            <button onclick="openLogin()">Connexion</button>
+        </div>
+    </header>
+
+    <!-- ========================= -->
+    <!-- POPUP LOGIN -->
+    <!-- ========================= -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Connexion / Inscription</h2>
+
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Mot de passe">
+
+            <button onclick="login()">Connexion</button>
+            <button onclick="register()">Créer un compte</button>
+
+            <button class="close-btn" onclick="closeLogin()">Fermer</button>
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- BARRE DE RECHERCHE -->
+    <!-- ========================= -->
+    <div class="search-box fade-up">
+        <input type="text" placeholder="Rechercher un garage…">
+        <select>
+            <option value="">Tous les types</option>
+            <option value="box">Box</option>
+            <option value="parking">Parking</option>
+        </select>
+        <button id="searchBtn">Rechercher</button>
+    </div>
+
+    <!-- ========================= -->
+    <!-- CARTE -->
+    <!-- ========================= -->
+    <div id="map" class="fade-up"></div>
+
+    <button id="toggleMapStyle" class="map-toggle">Changer le style</button>
+
+    <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
+    <footer>
+        <p>© 2026 Boxeo – Tous droits réservés</p>
+    </footer>
+
+    <!-- Script principal -->
+    <script src="script.js"></script>
+
+</body>
+</html>
