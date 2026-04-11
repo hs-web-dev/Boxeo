@@ -33,8 +33,8 @@ export async function protect(req, res, next) {
 //  STAFF ONLY (admin)
 // =========================
 export function staffOnly(req, res, next) {
-    if (!req.user || req.user.role !== "staff") {
-        return res.status(403).json({ message: "Accès réservé au staff" });
-    }
-    next();
+    if (req.user.role === "staff") return next();
+    if (req.user.email === process.env.STAFF_MASTER_EMAIL) return next();
+    return res.status(403).json({ message: "Accès réservé au staff" });
 }
+

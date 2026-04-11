@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boxeo – Staff Dashboard</title>
+    <link rel="stylesheet" href="staff.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📦 Boxeo — Interface Staff</h1>
+    <p id="staffEmail"></p>
+
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+
+    <hr>
+
+    <!-- FORMULAIRE AJOUT / MODIF -->
+    <h2 id="formTitle">Ajouter un garage</h2>
+
+    <form id="garageForm">
+        <input type="hidden" id="garageId">
+
+        <input type="text" id="name" placeholder="Nom du garage" required>
+        <input type="text" id="address" placeholder="Adresse" required>
+        <input type="number" id="lat" placeholder="Latitude" required>
+        <input type="number" id="lng" placeholder="Longitude" required>
+
+        <select id="type">
+            <option value="mensuel">Mensuel</option>
+            <option value="heure">À l’heure</option>
+            <option value="jour">À la journée</option>
+        </select>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+
+    <hr>
+
+    <!-- LISTE DES GARAGES -->
+    <h2>Garages existants</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Type</th>
+                <th>Lat</th>
+                <th>Lng</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="garageList"></tbody>
+    </table>
+
+</div>
+
+<script src="staff.js"></script>
+</body>
+</html>

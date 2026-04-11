@@ -86,7 +86,7 @@ function logout() {
 }
 
 // =========================
-//  CHECK LOGIN
+//  CHECK LOGIN + MODE STAFF
 // =========================
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
@@ -105,14 +105,23 @@ function checkLoginStatus() {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.email) {
-            if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
-            if (userEmail) userEmail.innerHTML = data.email;
+        if (!data.email) return;
 
-            const settingsEmail = document.getElementById("settingsEmail");
-            if (settingsEmail) settingsEmail.innerHTML = "Connecté : " + data.email;
-        } else {
-            if (userStatus) userStatus.innerHTML = "Non connecté";
+        if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
+        if (userEmail) userEmail.innerHTML = data.email;
+
+        // MODE STAFF (staff OU staffMaster)
+        if (data.role === "staff" || data.staffMaster === true) {
+            const nav = document.querySelector(".nav");
+
+            // éviter doublons
+            if (!document.querySelector(".staff-link")) {
+                const staffBtn = document.createElement("a");
+                staffBtn.href = "staff.html";
+                staffBtn.innerText = "Espace Staff";
+                staffBtn.classList.add("staff-link");
+                nav.appendChild(staffBtn);
+            }
         }
     });
 }

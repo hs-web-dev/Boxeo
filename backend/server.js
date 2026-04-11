@@ -12,27 +12,39 @@ connectDB();
 
 const app = express();
 
+// =========================
+//  CORS FIX POUR RENDER
+// =========================
 app.use(cors({
   origin: [
-    "http://localhost:3000",
-    "https://boxeo-frontend.onrender.com"
+    "https://boxeo-frontend.onrender.com",
+    "http://localhost:3000"
   ],
   credentials: true
 }));
 
+// =========================
+//  PARSERS
+// =========================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// =========================
+//  ROUTES API
+// =========================
 app.use("/api/auth", authRoutes);
 app.use("/api/garages", garageRoutes);
-app.use("/staff", staffRoutes);
+app.use("/api/staff", staffRoutes);
 
+// =========================
+//  ROUTE PAR DÉFAUT
+// =========================
 app.get("/", (req, res) => {
   res.send("Boxeo backend running");
 });
 
+// =========================
+//  LANCEMENT SERVEUR
+// =========================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
-
-app.use("/auth", authRoutes);
-app.use("/garages", garageRoutes);

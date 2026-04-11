@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
         default: "user" 
     },
 
+    staffNumber: { 
+        type: Number, 
+        default: null 
+    },
+
     createdAt: { 
         type: Date, 
         default: Date.now 
