@@ -105,16 +105,20 @@ function checkLoginStatus() {
     })
     .then(res => res.json())
     .then(data => {
+
+        console.log("RÉPONSE /auth/me :", data);
+
         if (!data.email) return;
 
         if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
         if (userEmail) userEmail.innerHTML = data.email;
 
-        // MODE STAFF (staff OU staffMaster)
+        // =========================
+        //  MODE STAFF (AJOUT DU BOUTON)
+        // =========================
         if (data.role === "staff" || data.staffMaster === true) {
             const nav = document.querySelector(".nav");
 
-            // éviter doublons
             if (!document.querySelector(".staff-link")) {
                 const staffBtn = document.createElement("a");
                 staffBtn.href = "staff.html";
