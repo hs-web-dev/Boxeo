@@ -1,8 +1,12 @@
 {
   "name": "boxeo-backend",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -12,7 +16,4 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3"
   }
-}
-"engines": {
-  "node": "18.x"
 }
