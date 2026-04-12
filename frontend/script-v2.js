@@ -96,10 +96,8 @@ function checkLoginStatus() {
 
     if (!token) {
         if (userStatus) userStatus.innerHTML = "Non connecté";
-
         if (loginBtn) loginBtn.style.display = "inline-block";
         if (logoutBtn) logoutBtn.style.display = "none";
-
         return;
     }
 
@@ -110,20 +108,13 @@ function checkLoginStatus() {
     .then(res => res.json())
     .then(data => {
 
-        console.log("RÉPONSE /auth/me :", data);
-
         if (!data.email) return;
 
-        // Affichage email
         if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
-
-        // Gestion boutons login/logout
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-        // =========================
-        //  MODE STAFF (AJOUT DU BOUTON)
-        // =========================
+        // MODE STAFF
         if (data.role === "staff" || data.staffMaster === true) {
             const nav = document.querySelector(".nav");
 
@@ -166,15 +157,11 @@ function deleteAccount() {
         return;
     }
 
-    if (!confirm("Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible.")) {
-        return;
-    }
+    if (!confirm("Voulez-vous vraiment supprimer votre compte ?")) return;
 
     fetch(`${API_URL}/auth/delete`, {
         method: "DELETE",
-        headers: {
-            "Authorization": "Bearer " + token
-        }
+        headers: { "Authorization": "Bearer " + token }
     })
     .then(res => res.json())
     .then(data => {
@@ -243,7 +230,7 @@ window.addEventListener("scroll", handleScrollAnimations);
 window.addEventListener("load", handleScrollAnimations);
 
 // =========================
-//  RESET SEARCHBAR AU CHARGEMENT
+//  RESET SEARCHBAR
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".search-box input");
@@ -254,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================
-//  CARTE LEAFLET (DYNAMIQUE)
+//  CARTE LEAFLET (CORRIGÉE)
 // =========================
 if (document.getElementById("map") && typeof L !== "undefined") {
 
@@ -295,21 +282,20 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         popupAnchor: [0, -60]
     });
 
-    // =========================
-    //  GARAGES DYNAMIQUES
-    // =========================
+    // LAYERGROUP STABLE
+    const garagesLayer = L.layerGroup().addTo(map);
+
     let garages = [];
-    let markers = [];
 
     async function loadGaragesFromBackend() {
         try {
             const res = await fetch(`${API_URL}/garages`);
             garages = await res.json();
 
-            garages = garages.filter(g => 
-                typeof g.lat === "number" && 
+            garages = garages.filter(g =>
+                typeof g.lat === "number" &&
                 typeof g.lng === "number" &&
-                !isNaN(g.lat) && 
+                !isNaN(g.lat) &&
                 !isNaN(g.lng)
             );
 
@@ -322,8 +308,7 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     function afficherGarages(filtreTexte = "", filtreType = "") {
         if (!Array.isArray(garages) || garages.length === 0) return;
 
-        markers.forEach(m => map.removeLayer(m));
-        markers = [];
+        garagesLayer.clearLayers();
 
         const texte = normalize(filtreTexte);
 
@@ -338,14 +323,23 @@ if (document.getElementById("map") && typeof L !== "undefined") {
                 levenshtein(name, texte) <= 3 ||
                 levenshtein(addr, texte) <= 3;
 
-            const matchType = !filtreType || filtreType === "" || g.type === filtreType;
+            const matchType =
+                !filtreType ||
+                filtreType === "" ||
+                g.type === filtreType;
 
             if (matchTexte && matchType) {
-                const marker = L.marker([g.lat, g.lng], { icon: carIcon }).addTo(map);
+                const marker = L.marker([g.lat, g.lng], { icon: carIcon });
 
                 marker.bindTooltip(
                     `<b>${g.name ?? "Garage"}</b><br>${g.address ?? ""}`,
-                    { permanent: false, direction: "top", offset: [0, -10], opacity: 1, className: "custom-tooltip" }
+                    {
+                        permanent: false,
+                        direction: "top",
+                        offset: [0, -10],
+                        opacity: 1,
+                        className: "custom-tooltip"
+                    }
                 );
 
                 marker.on("click", () => {
@@ -354,7 +348,7 @@ if (document.getElementById("map") && typeof L !== "undefined") {
                     }
                 });
 
-                markers.push(marker);
+                marker.addTo(garagesLayer);
             }
         });
     }
@@ -363,10 +357,10 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         const searchInput = document.querySelector(".search-box input");
         const typeSelect = document.querySelector(".search-box select");
 
-        const currentText = searchInput ? searchInput.value : "";
-        const currentType = typeSelect ? typeSelect.value : "";
-
-        afficherGarages(currentText, currentType);
+        afficherGarages(
+            searchInput ? searchInput.value : "",
+            typeSelect ? typeSelect.value : ""
+        );
     });
 
     loadGaragesFromBackend();
@@ -378,13 +372,19 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     if (searchInput) {
         searchInput.value = "";
         searchInput.addEventListener("input", () => {
-            afficherGarages(searchInput.value, typeSelect ? typeSelect.value : "");
+            afficherGarages(
+                searchInput.value,
+                typeSelect ? typeSelect.value : ""
+            );
         });
     }
 
     if (typeSelect) {
         typeSelect.addEventListener("change", () => {
-            afficherGarages(searchInput ? searchInput.value : "", typeSelect.value);
+            afficherGarages(
+                searchInput ? searchInput.value : "",
+                typeSelect.value
+            );
         });
     }
 
