@@ -91,11 +91,15 @@ function logout() {
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
     const userStatus = document.getElementById("userStatus");
-    const userEmail = document.getElementById("userEmail");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
     if (!token) {
         if (userStatus) userStatus.innerHTML = "Non connecté";
-        if (userEmail) userEmail.innerHTML = "";
+
+        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+
         return;
     }
 
@@ -110,8 +114,12 @@ function checkLoginStatus() {
 
         if (!data.email) return;
 
+        // Affichage email
         if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
-        if (userEmail) userEmail.innerHTML = data.email;
+
+        // Gestion boutons login/logout
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "inline-block";
 
         // =========================
         //  MODE STAFF (AJOUT DU BOUTON)

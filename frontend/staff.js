@@ -17,7 +17,7 @@ async function checkStaff() {
 
     const data = await res.json();
 
-    if (!data.email) {
+    if (!data.email || !(data.role === "staff" || data.staffMaster === true)) {
         alert("Accès refusé");
         window.location.href = "index.html";
         return;
