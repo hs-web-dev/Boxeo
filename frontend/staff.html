@@ -18,6 +18,21 @@
 
     <hr>
 
+    <!-- 🔥 ZONE PROMOTION (MASTER ONLY) -->
+    <div id="promotionZone" style="display:none; margin-bottom:30px;">
+        <h2>Gestion du Staff</h2>
+
+        <h3>Promouvoir un utilisateur</h3>
+        <input type="email" id="promoteEmail" placeholder="Email à promouvoir">
+        <button onclick="promoteUser()">Promouvoir</button>
+
+        <h3 style="margin-top:20px;">Retirer un utilisateur du staff</h3>
+        <input type="email" id="removeEmail" placeholder="Email à retirer">
+        <button onclick="removeUser()">Retirer</button>
+    </div>
+
+    <hr>
+
     <!-- FORMULAIRE AJOUT / MODIF -->
     <h2 id="formTitle">Ajouter un garage</h2>
 
@@ -26,14 +41,11 @@
 
         <input type="text" id="name" placeholder="Nom du garage" required>
 
-        <!-- Adresse + suggestions -->
         <input type="text" id="address" placeholder="Adresse" required autocomplete="off">
         <div id="addressSuggestions" class="suggestions"></div>
 
-        <!-- Nombre de places -->
         <input type="number" id="places" placeholder="Nombre de places" required>
 
-        <!-- Type -->
         <select id="type">
             <option value="all">Tous</option>
             <option value="mensuel">Mensuel</option>
@@ -46,7 +58,6 @@
 
     <hr>
 
-    <!-- LISTE DES GARAGES -->
     <h2>Garages existants</h2>
 
     <table>

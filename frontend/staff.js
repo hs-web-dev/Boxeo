@@ -24,6 +24,11 @@ async function checkStaff() {
     }
 
     document.getElementById("staffEmail").innerHTML = "Connecté : " + data.email;
+
+    // 🔥 Zone promotion visible uniquement pour le MASTER
+    if (data.staffMaster === true) {
+        document.getElementById("promotionZone").style.display = "block";
+    }
 }
 
 checkStaff();
@@ -153,6 +158,46 @@ async function deleteGarage(id) {
 
     alert("Garage supprimé !");
     loadGarages();
+}
+
+// =========================
+//  PROMOUVOIR UN UTILISATEUR
+// =========================
+async function promoteUser() {
+    const email = document.getElementById("promoteEmail").value.trim();
+    if (!email) return alert("Entrez un email");
+
+    const res = await fetch(`${API_URL}/auth/make-staff`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+}
+
+// =========================
+//  RETIRER UN UTILISATEUR DU STAFF
+// =========================
+async function removeUser() {
+    const email = document.getElementById("removeEmail").value.trim();
+    if (!email) return alert("Entrez un email");
+
+    const res = await fetch(`${API_URL}/auth/remove-staff`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+    alert(data.message);
 }
 
 // =========================

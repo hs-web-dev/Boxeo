@@ -240,51 +240,33 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================
-//  CARTE LEAFLET (VERSION divIcon)
+//  CARTE LEAFLET (FIX COMPLET)
 // =========================
+L.Marker.prototype.options.renderer = L.canvas();
+
 if (document.getElementById("map") && typeof L !== "undefined") {
 
-    const map = L.map('map').setView([48.8566, 2.3522], 12);
+    const map = L.map('map', {
+        preferCanvas: true
+    }).setView([48.8566, 2.3522], 12);
 
     const lightStyle = L.tileLayer(
         'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         { attribution: '© Carto', maxZoom: 19 }
     );
 
-    const esriStyle = L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        { attribution: 'Tiles © Esri', maxZoom: 19 }
-    );
-
     lightStyle.addTo(map);
-    let currentStyle = "light";
 
-    const toggleBtn = document.getElementById("toggleMapStyle");
-    if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-            if (currentStyle === "light") {
-                map.removeLayer(lightStyle);
-                esriStyle.addTo(map);
-                currentStyle = "esri";
-            } else {
-                map.removeLayer(esriStyle);
-                lightStyle.addTo(map);
-                currentStyle = "light";
-            }
-        });
-    }
-
-    // =========================
-    //  divIcon (NE DISPARAÎT JAMAIS)
-    // =========================
-    const carIcon = L.divIcon({
-        html: `<img src="assets/icons/carpoint.png" style="width:50px;height:70px;">`,
+    const carIcon = L.icon({
+        iconUrl: 'assets/icons/carpoint.png',
         iconSize: [50, 70],
-        className: "car-marker"
+        iconAnchor: [25, 55],
+        popupAnchor: [0, -60]
     });
 
-    // LAYERGROUP STABLE
-    const garagesLayer = L.layerGroup().addTo(map);
+    const garagesLayer = L.layerGroup({
+        renderer: L.canvas()
+    }).addTo(map);
 
     let garages = [];
 
@@ -295,20 +277,16 @@ if (document.getElementById("map") && typeof L !== "undefined") {
 
             garages = garages.filter(g =>
                 typeof g.lat === "number" &&
-                typeof g.lng === "number" &&
-                !isNaN(g.lat) &&
-                !isNaN(g.lng)
+                typeof g.lng === "number"
             );
 
-            afficherGarages();
+            refreshMarkers();
         } catch (err) {
             console.error("Erreur chargement garages :", err);
         }
     }
 
     function afficherGarages(filtreTexte = "", filtreType = "") {
-        if (!Array.isArray(garages) || garages.length === 0) return;
-
         garagesLayer.clearLayers();
 
         const texte = normalize(filtreTexte);
@@ -326,21 +304,13 @@ if (document.getElementById("map") && typeof L !== "undefined") {
 
             const matchType =
                 !filtreType ||
-                filtreType === "" ||
                 g.type === filtreType;
 
             if (matchTexte && matchType) {
                 const marker = L.marker([g.lat, g.lng], { icon: carIcon });
 
                 marker.bindTooltip(
-                    `<b>${g.name ?? "Garage"}</b><br>${g.address ?? ""}`,
-                    {
-                        permanent: false,
-                        direction: "top",
-                        offset: [0, -10],
-                        opacity: 1,
-                        className: "custom-tooltip"
-                    }
+                    `<b>${g.name ?? "Garage"}</b><br>${g.address ?? ""}`
                 );
 
                 marker.on("click", () => {
@@ -354,7 +324,7 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         });
     }
 
-    map.on("zoomend", () => {
+    function refreshMarkers() {
         const searchInput = document.querySelector(".search-box input");
         const typeSelect = document.querySelector(".search-box select");
 
@@ -362,6 +332,14 @@ if (document.getElementById("map") && typeof L !== "undefined") {
             searchInput ? searchInput.value : "",
             typeSelect ? typeSelect.value : ""
         );
+    }
+
+    // 🔥 FIX PRINCIPAL
+    map.on("zoomend", refreshMarkers);
+    map.on("moveend", refreshMarkers);
+
+    map.whenReady(() => {
+        refreshMarkers();
     });
 
     loadGaragesFromBackend();
@@ -371,30 +349,14 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     const searchBtn = document.getElementById("searchBtn");
 
     if (searchInput) {
-        searchInput.value = "";
-        searchInput.addEventListener("input", () => {
-            afficherGarages(
-                searchInput.value,
-                typeSelect ? typeSelect.value : ""
-            );
-        });
+        searchInput.addEventListener("input", refreshMarkers);
     }
 
     if (typeSelect) {
-        typeSelect.addEventListener("change", () => {
-            afficherGarages(
-                searchInput ? searchInput.value : "",
-                typeSelect.value
-            );
-        });
+        typeSelect.addEventListener("change", refreshMarkers);
     }
 
     if (searchBtn) {
-        searchBtn.addEventListener("click", () => {
-            afficherGarages(
-                searchInput ? searchInput.value : "",
-                typeSelect ? typeSelect.value : ""
-            );
-        });
+        searchBtn.addEventListener("click", refreshMarkers);
     }
 }
