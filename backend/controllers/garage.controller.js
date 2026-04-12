@@ -1,6 +1,6 @@
 
 import Garage from "../models/garage.model.js";
-import fetch from "node-fetch";
+
 
 // =========================
 //  GÉOCODAGE AUTOMATIQUE
