@@ -156,6 +156,13 @@ async function deleteGarage(id) {
 }
 
 // =========================
+//  RETOUR ACCUEIL
+// =========================
+function goHome() {
+    window.location.href = "index.html";
+}
+
+// =========================
 //  LOGOUT
 // =========================
 function logout() {

@@ -45,6 +45,11 @@ button:hover {
     background: #334155;
 }
 
+.home-btn {
+    background: #0ea5e9;
+    margin-left: 10px;
+}
+
 table {
     width: 100%;
     margin-top: 20px;
@@ -68,4 +73,24 @@ th, td {
 
 .delete-btn {
     background: #dc2626;
+}
+
+/* Suggestions adresse */
+.suggestions {
+    background: #1e293b;
+    border-radius: 8px;
+    margin-top: 5px;
+    padding: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestions div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #334155;
+}
+
+.suggestions div:hover {
+    background: #334155;
 }
