@@ -278,7 +278,7 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     const carIcon = L.icon({
         iconUrl: 'assets/icons/carpoint.png',
         iconSize: [50, 70],
-        iconAnchor: [25, 70],
+        iconAnchor: [25, 55],
         popupAnchor: [0, -60]
     });
 
