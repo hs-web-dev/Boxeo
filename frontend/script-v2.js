@@ -114,7 +114,6 @@ function checkLoginStatus() {
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-        // MODE STAFF
         if (data.role === "staff" || data.staffMaster === true) {
             const nav = document.querySelector(".nav");
 
@@ -241,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================
-//  CARTE LEAFLET (CORRIGÉE)
+//  CARTE LEAFLET (VERSION divIcon)
 // =========================
 if (document.getElementById("map") && typeof L !== "undefined") {
 
@@ -275,11 +274,13 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         });
     }
 
-    const carIcon = L.icon({
-        iconUrl: 'assets/icons/carpoint.png',
+    // =========================
+    //  divIcon (NE DISPARAÎT JAMAIS)
+    // =========================
+    const carIcon = L.divIcon({
+        html: `<img src="assets/icons/carpoint.png" style="width:50px;height:70px;">`,
         iconSize: [50, 70],
-        iconAnchor: [25, 55],
-        popupAnchor: [0, -60]
+        className: "car-marker"
     });
 
     // LAYERGROUP STABLE
