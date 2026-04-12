@@ -5,7 +5,7 @@ import {
     getGarage,
     updateGarage,
     deleteGarage
-} from "../controllers/garageController.js";
+} from "../controllers/garage.controller.js";
 
 const router = express.Router();
 
