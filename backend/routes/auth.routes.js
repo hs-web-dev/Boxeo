@@ -4,10 +4,11 @@ import {
     login, 
     me, 
     deleteAccount, 
-    makeStaff 
+    makeStaff,
+    removeStaff
 } from "../controllers/auth.controller.js";
 
-import { protect, staffOnly } from "../middlewares/auth.middleware.js";
+import { protect, staffOnly, staffMasterOnly } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -23,8 +24,11 @@ router.get("/me", protect, me);
 // DELETE ACCOUNT
 router.delete("/delete", protect, deleteAccount);
 
-// PROMOTE STAFF
-router.post("/make-staff", protect, staffOnly, makeStaff);
+// PROMOTE STAFF (MASTER ONLY)
+router.post("/make-staff", protect, staffMasterOnly, makeStaff);
+
+// REMOVE STAFF (MASTER ONLY)
+router.post("/remove-staff", protect, staffMasterOnly, removeStaff);
 
 // STAFF ZONE TEST
 router.get("/staff-zone", protect, staffOnly, (req, res) => {

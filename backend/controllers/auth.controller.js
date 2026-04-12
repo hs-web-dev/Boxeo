@@ -12,7 +12,6 @@ export const register = async (req, res) => {
 
         const hashed = await bcrypt.hash(password, 10);
 
-        // numéro staff automatique
         const count = await User.countDocuments();
 
         const user = await User.create({
@@ -69,7 +68,7 @@ export const me = async (req, res) => {
     });
 };
 
-// PROMOTE STAFF
+// PROMOTE STAFF (MASTER ONLY)
 export const makeStaff = async (req, res) => {
     const { email } = req.body;
 
@@ -80,7 +79,24 @@ export const makeStaff = async (req, res) => {
         user.role = "staff";
         await user.save();
 
-        res.json({ message: "Utilisateur promu STAFF ✔" });
+        res.json({ message: `${email} est maintenant STAFF ✔` });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+// REMOVE STAFF (MASTER ONLY)
+export const removeStaff = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.json({ message: "Utilisateur introuvable" });
+
+        user.role = "user";
+        await user.save();
+
+        res.json({ message: `${email} n'est plus STAFF ❌` });
     } catch (err) {
         res.status(500).json({ message: "Erreur serveur" });
     }

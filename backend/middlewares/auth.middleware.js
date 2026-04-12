@@ -22,7 +22,7 @@ export async function protect(req, res, next) {
             return res.status(404).json({ message: "Utilisateur introuvable" });
         }
 
-        req.user = user; // contient email, role, createdAt, id
+        req.user = user;
         next();
     } catch (err) {
         res.status(401).json({ message: "Token invalide" });
@@ -30,7 +30,7 @@ export async function protect(req, res, next) {
 }
 
 // =========================
-//  STAFF ONLY (admin)
+//  STAFF ONLY
 // =========================
 export function staffOnly(req, res, next) {
     if (req.user.role === "staff") return next();
@@ -38,3 +38,10 @@ export function staffOnly(req, res, next) {
     return res.status(403).json({ message: "Accès réservé au staff" });
 }
 
+// =========================
+//  STAFF MASTER ONLY
+// =========================
+export function staffMasterOnly(req, res, next) {
+    if (req.user.email === process.env.STAFF_MASTER_EMAIL) return next();
+    return res.status(403).json({ message: "Accès réservé au Staff Master" });
+}
