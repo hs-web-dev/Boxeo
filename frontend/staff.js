@@ -29,6 +29,40 @@ async function checkStaff() {
 checkStaff();
 
 // =========================
+//  AUTO-COMPLÉTION ADRESSE
+// =========================
+const addressInput = document.getElementById("address");
+const suggestionsBox = document.getElementById("addressSuggestions");
+
+addressInput.addEventListener("input", async () => {
+    const query = addressInput.value.trim();
+    if (query.length < 3) {
+        suggestionsBox.innerHTML = "";
+        return;
+    }
+
+    const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`,
+        { headers: { "User-Agent": "Boxeo-App" } }
+    );
+
+    const results = await res.json();
+    suggestionsBox.innerHTML = "";
+
+    results.forEach(r => {
+        const div = document.createElement("div");
+        div.innerText = r.display_name;
+
+        div.onclick = () => {
+            addressInput.value = r.display_name;
+            suggestionsBox.innerHTML = "";
+        };
+
+        suggestionsBox.appendChild(div);
+    });
+});
+
+// =========================
 //  CHARGER LES GARAGES
 // =========================
 async function loadGarages() {
@@ -44,9 +78,8 @@ async function loadGarages() {
         row.innerHTML = `
             <td>${g.name}</td>
             <td>${g.address}</td>
+            <td>${g.places}</td>
             <td>${g.type}</td>
-            <td>${g.lat}</td>
-            <td>${g.lng}</td>
             <td>
                 <button class="action-btn edit-btn" onclick="editGarage('${g._id}')">Modifier</button>
                 <button class="action-btn delete-btn" onclick="deleteGarage('${g._id}')">Supprimer</button>
@@ -68,11 +101,10 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     const id = document.getElementById("garageId").value;
     const name = document.getElementById("name").value;
     const address = document.getElementById("address").value;
-    const lat = parseFloat(document.getElementById("lat").value);
-    const lng = parseFloat(document.getElementById("lng").value);
+    const places = parseInt(document.getElementById("places").value);
     const type = document.getElementById("type").value;
 
-    const body = { name, address, lat, lng, type };
+    const body = { name, address, places, type };
 
     const method = id ? "PUT" : "POST";
     const url = id ? `${API_URL}/garages/${id}` : `${API_URL}/garages`;
@@ -102,8 +134,7 @@ async function editGarage(id) {
     document.getElementById("garageId").value = g._id;
     document.getElementById("name").value = g.name;
     document.getElementById("address").value = g.address;
-    document.getElementById("lat").value = g.lat;
-    document.getElementById("lng").value = g.lng;
+    document.getElementById("places").value = g.places;
     document.getElementById("type").value = g.type;
 
     document.getElementById("formTitle").innerText = "Modifier un garage";

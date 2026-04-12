@@ -24,11 +24,17 @@
         <input type="hidden" id="garageId">
 
         <input type="text" id="name" placeholder="Nom du garage" required>
-        <input type="text" id="address" placeholder="Adresse" required>
-        <input type="number" id="lat" placeholder="Latitude" required>
-        <input type="number" id="lng" placeholder="Longitude" required>
 
+        <!-- Adresse + suggestions -->
+        <input type="text" id="address" placeholder="Adresse" required autocomplete="off">
+        <div id="addressSuggestions" class="suggestions"></div>
+
+        <!-- Nombre de places -->
+        <input type="number" id="places" placeholder="Nombre de places" required>
+
+        <!-- Type -->
         <select id="type">
+            <option value="all">Tous</option>
             <option value="mensuel">Mensuel</option>
             <option value="heure">À l’heure</option>
             <option value="jour">À la journée</option>
@@ -47,9 +53,8 @@
             <tr>
                 <th>Nom</th>
                 <th>Adresse</th>
+                <th>Places</th>
                 <th>Type</th>
-                <th>Lat</th>
-                <th>Lng</th>
                 <th>Actions</th>
             </tr>
         </thead>
