@@ -5,7 +5,8 @@ import {
     me, 
     deleteAccount, 
     makeStaff,
-    removeStaff
+    removeStaff,
+    verifyEmail
 } from "../controllers/auth.controller.js";
 
 import { protect, staffOnly, staffMasterOnly } from "../middlewares/auth.middleware.js";
@@ -14,6 +15,9 @@ const router = express.Router();
 
 // REGISTER
 router.post("/register", register);
+
+// VERIFY EMAIL
+router.post("/verify-email", verifyEmail);
 
 // LOGIN
 router.post("/login", login);
