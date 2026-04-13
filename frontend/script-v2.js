@@ -86,13 +86,18 @@ function logout() {
 }
 
 // =========================
-//  CHECK LOGIN + MODE STAFF
+//  CHECK LOGIN + MODE STAFF (FIX COMPLET)
 // =========================
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
     const userStatus = document.getElementById("userStatus");
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const nav = document.querySelector(".nav");
+
+    // 🔥 FIX : supprimer le bouton staff AVANT TOUT
+    const oldStaffBtn = document.querySelector(".staff-link");
+    if (oldStaffBtn) oldStaffBtn.remove();
 
     if (!token) {
         if (userStatus) userStatus.innerHTML = "Non connecté";
@@ -114,16 +119,13 @@ function checkLoginStatus() {
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "inline-block";
 
+        // 🔥 FIX : ajouter le bouton staff UNIQUEMENT si staff ou master
         if (data.role === "staff" || data.staffMaster === true) {
-            const nav = document.querySelector(".nav");
-
-            if (!document.querySelector(".staff-link")) {
-                const staffBtn = document.createElement("a");
-                staffBtn.href = "staff.html";
-                staffBtn.innerText = "Espace Staff";
-                staffBtn.classList.add("staff-link");
-                nav.appendChild(staffBtn);
-            }
+            const staffBtn = document.createElement("a");
+            staffBtn.href = "staff.html";
+            staffBtn.innerText = "Espace Staff";
+            staffBtn.classList.add("staff-link");
+            nav.appendChild(staffBtn);
         }
     });
 }
@@ -334,7 +336,6 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         );
     }
 
-    // 🔥 FIX PRINCIPAL
     map.on("zoomend", refreshMarkers);
     map.on("moveend", refreshMarkers);
 
