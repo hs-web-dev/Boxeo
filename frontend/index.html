@@ -27,7 +27,6 @@
         <a href="#">Contact</a>
         <a id="settingsBtn" onclick="goToSettings()">Paramètres</a>
 
-
         <!-- Zone d'état utilisateur -->
         <span id="userStatus"></span>
 
@@ -141,6 +140,21 @@
 
         <p id="loginMessage"></p>
         <button onclick="closeLogin()">Fermer</button>
+    </div>
+</div>
+
+<!-- POPUP VÉRIFICATION EMAIL -->
+<div id="verifyModal" class="modal">
+    <div class="modal-content">
+        <h2>Vérification email</h2>
+        <p>Un code à 6 chiffres vous a été envoyé.</p>
+
+        <input id="verifyCode" type="text" placeholder="Code à 6 chiffres">
+
+        <button onclick="verifyEmailCode()">Valider</button>
+        <button onclick="closeVerify()">Fermer</button>
+
+        <p id="verifyMessage"></p>
     </div>
 </div>
 

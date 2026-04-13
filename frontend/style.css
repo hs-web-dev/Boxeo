@@ -314,7 +314,6 @@ footer {
     background-color: #e56d00;
 }
 
-
 .suggestions {
     background: #1e293b;
     border-radius: 8px;
@@ -332,4 +331,43 @@ footer {
 
 .suggestions div:hover {
     background: #334155;
+}
+
+/* ------------------------------
+   POPUP VERIFICATION EMAIL
+------------------------------ */
+#verifyModal .modal-content {
+    width: 320px;
+    text-align: center;
+}
+
+#verifyModal input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 999px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #fff;
+}
+
+#verifyModal button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 999px;
+    border: none;
+    background: #ff6600;
+    color: #fff;
+    cursor: pointer;
+}
+
+#verifyModal button:last-of-type {
+    background: #334155;
+}
+
+#verifyMessage {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #f97316;
 }
