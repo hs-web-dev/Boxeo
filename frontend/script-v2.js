@@ -201,7 +201,7 @@ function levenshtein(a, b) {
     for (let j = 0; j <= blen; j++) matrix[0][j] = j;
 
     for (let i = 1; i <= alen; i++) {
-        for (let j = 1; j <= bllen; j++) {
+        for (let j = 1; j <= blen; j++) {
             const cost = a[i - 1] === b[j - 1] ? 0 : 1;
 
             matrix[i][j] = Math.min(
@@ -214,6 +214,7 @@ function levenshtein(a, b) {
 
     return matrix[alen][blen];
 }
+
 
 /* ============================
    ANIMATIONS
