@@ -31,14 +31,17 @@ async function sendVerificationEmail(to, code) {
 }
 
 // =========================
-//  REGISTER
+//  REGISTER (VERSION QUI SUPPRIME L'ANCIEN COMPTE)
 // =========================
 export const register = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const exists = await User.findOne({ email });
-        if (exists) return res.json({ message: "Email déjà utilisé" });
+        // 🔥 Si un compte existe déjà avec cet email, on le supprime
+        const oldUser = await User.findOne({ email });
+        if (oldUser) {
+            await User.deleteOne({ email });
+        }
 
         const hashed = await bcrypt.hash(password, 10);
         const count = await User.countDocuments();
@@ -96,8 +99,6 @@ export const login = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-        // ❌ SUPPRIMÉ : blocage si email non vérifié
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.json({ message: "Mot de passe incorrect" });
@@ -167,11 +168,10 @@ export const removeStaff = async (req, res) => {
 };
 
 // =========================
-//  DELETE ACCOUNT (VERSION QUI SUPPRIME VRAIMENT L'EMAIL)
+//  DELETE ACCOUNT (SUPPRESSION PAR EMAIL)
 // =========================
 export const deleteAccount = async (req, res) => {
     try {
-        // 🔥 Supprimer par email = 100% fiable
         await User.findOneAndDelete({ email: req.user.email });
 
         res.json({ message: "Compte supprimé avec succès" });
