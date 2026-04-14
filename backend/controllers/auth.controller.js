@@ -1,67 +1,35 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 
 // =========================
-//  GENERATE 6 DIGIT CODE
-// =========================
-function generateCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// =========================
-//  SEND EMAIL
-// =========================
-async function sendVerificationEmail(to, code) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-        }
-    });
-
-    await transporter.sendMail({
-        from: process.env.MAIL_USER,
-        to,
-        subject: "Votre code de vérification Boxeo",
-        text: `Votre code de vérification est : ${code}`
-    });
-}
-
-// =========================
-//  REGISTER (VERSION QUI SUPPRIME L'ANCIEN COMPTE)
+//  REGISTER (SIMPLE, SANS EMAIL)
 // =========================
 export const register = async (req, res) => {
     const { email, password } = req.body;
 
     try {
         // 🔥 Si un compte existe déjà avec cet email, on le supprime
-        const oldUser = await User.findOne({ email });
-        if (oldUser) {
-            await User.deleteOne({ email });
-        }
+        await User.deleteOne({ email });
 
         const hashed = await bcrypt.hash(password, 10);
         const count = await User.countDocuments();
-
-        const code = generateCode();
 
         const user = await User.create({
             email,
             password: hashed,
             role: "user",
             staffNumber: count + 1,
-            emailCode: code,
-            emailVerified: false
+            emailVerified: true // plus de vérification
         });
 
-        await sendVerificationEmail(email, code);
-
         res.json({ 
-            message: "Compte créé ✔ Vérifiez votre email.",
-            needVerification: true 
+            message: "Compte créé ✔",
+            token: jwt.sign(
+                { id: user._id, email: user.email, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            )
         });
 
     } catch (err) {
@@ -71,27 +39,7 @@ export const register = async (req, res) => {
 };
 
 // =========================
-//  VERIFY EMAIL
-// =========================
-export const verifyEmail = async (req, res) => {
-    const { email, code } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-    if (user.emailCode !== code) {
-        return res.json({ message: "Code incorrect ❌" });
-    }
-
-    user.emailVerified = true;
-    user.emailCode = null;
-    await user.save();
-
-    res.json({ message: "Email vérifié ✔" });
-};
-
-// =========================
-//  LOGIN (NE BLOQUE PLUS JAMAIS)
+//  LOGIN
 // =========================
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -130,50 +78,11 @@ export const me = async (req, res) => {
 };
 
 // =========================
-//  PROMOTE STAFF
-// =========================
-export const makeStaff = async (req, res) => {
-    const { email } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-        user.role = "staff";
-        await user.save();
-
-        res.json({ message: `${email} est maintenant STAFF ✔` });
-    } catch (err) {
-        res.status(500).json({ message: "Erreur serveur" });
-    }
-};
-
-// =========================
-//  REMOVE STAFF
-// =========================
-export const removeStaff = async (req, res) => {
-    const { email } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-        user.role = "user";
-        await user.save();
-
-        res.json({ message: `${email} n'est plus STAFF ❌` });
-    } catch (err) {
-        res.status(500).json({ message: "Erreur serveur" });
-    }
-};
-
-// =========================
-//  DELETE ACCOUNT (SUPPRESSION PAR EMAIL)
+//  DELETE ACCOUNT
 // =========================
 export const deleteAccount = async (req, res) => {
     try {
-        await User.findOneAndDelete({ email: req.user.email });
-
+        await User.deleteOne({ email: req.user.email });
         res.json({ message: "Compte supprimé avec succès" });
     } catch (err) {
         res.status(500).json({ message: "Erreur serveur" });
