@@ -20,20 +20,16 @@ export const register = async (req, res) => {
             password: hashed,
             role: "user",
             staffNumber: count + 1,
-            emailVerified: true // plus de vérification
+            emailVerified: true
         });
 
-        // 🔥 On renvoie directement un token
         const token = jwt.sign(
             { id: user._id, email: user.email, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        res.json({ 
-            message: "Compte créé ✔",
-            token
-        });
+        res.json({ message: "Compte créé ✔", token });
 
     } catch (err) {
         console.log(err);
@@ -78,6 +74,13 @@ export const me = async (req, res) => {
         staffNumber: req.user.staffNumber,
         staffMaster: isMaster
     });
+};
+
+// =========================
+//  VERIFY EMAIL (VIDE MAIS EXPORTÉ POUR ÉVITER L'ERREUR)
+// =========================
+export const verifyEmail = async (req, res) => {
+    res.json({ message: "Vérification désactivée ✔" });
 };
 
 // =========================
