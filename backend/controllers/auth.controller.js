@@ -23,13 +23,16 @@ export const register = async (req, res) => {
             emailVerified: true // plus de vérification
         });
 
+        // 🔥 On renvoie directement un token
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
         res.json({ 
             message: "Compte créé ✔",
-            token: jwt.sign(
-                { id: user._id, email: user.email, role: user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: "7d" }
-            )
+            token
         });
 
     } catch (err) {
@@ -75,6 +78,44 @@ export const me = async (req, res) => {
         staffNumber: req.user.staffNumber,
         staffMaster: isMaster
     });
+};
+
+// =========================
+//  PROMOTE STAFF
+// =========================
+export const makeStaff = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.json({ message: "Utilisateur introuvable" });
+
+        user.role = "staff";
+        await user.save();
+
+        res.json({ message: `${email} est maintenant STAFF ✔` });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+// =========================
+//  REMOVE STAFF
+// =========================
+export const removeStaff = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.json({ message: "Utilisateur introuvable" });
+
+        user.role = "user";
+        await user.save();
+
+        res.json({ message: `${email} n'est plus STAFF ❌` });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
 };
 
 // =========================
