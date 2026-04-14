@@ -143,13 +143,25 @@
     </div>
 </div>
 
-<!-- POPUP B (TEST POUR L’INSTANT) -->
-<div id="popupB" class="modal">
-    <div class="modal-content">
-        <h2>Popup B</h2>
-        <p>Ceci est un test. Le popup B s’ouvre correctement.</p>
+<!-- POPUP VÉRIFICATION EMAIL (6 CASES) -->
+<div id="verifyModal" class="modal">
+    <div class="modal-content verify-box">
+        <h2>Vérification de l'email</h2>
+        <p>Entrez le code reçu par email :</p>
 
-        <button onclick="closePopupB()">Fermer</button>
+        <div class="code-input">
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+        </div>
+
+        <button class="btn-verify" onclick="submitVerificationCode()">Valider</button>
+        <button onclick="closeVerifyPopup()" class="btn-close">Fermer</button>
+
+        <p id="verifyMessage" class="verify-message"></p>
     </div>
 </div>
 

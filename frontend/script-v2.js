@@ -12,23 +12,74 @@ function closeLogin() {
 }
 
 // =========================
-//  POPUP B (TEST)
+//  POPUP VERIFICATION EMAIL (6 CASES)
 // =========================
-function openPopupB() {
-    document.getElementById("popupB").classList.add("visible");
+let verifyEmailAddress = "";
+
+// OUVRIR POPUP B
+function openVerifyPopup(email) {
+    verifyEmailAddress = email;
+
+    const modal = document.getElementById("verifyModal");
+    modal.classList.add("visible");
+
+    const boxes = document.querySelectorAll(".code-box");
+
+    boxes.forEach(box => box.value = "");
+
+    boxes.forEach((box, index) => {
+        box.addEventListener("input", () => {
+            if (box.value.length === 1 && index < boxes.length - 1) {
+                boxes[index + 1].focus();
+            }
+        });
+
+        box.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && box.value === "" && index > 0) {
+                boxes[index - 1].focus();
+            }
+        });
+    });
+
+    boxes[0].focus();
 }
 
-function closePopupB() {
-    document.getElementById("popupB").classList.remove("visible");
+function closeVerifyPopup() {
+    document.getElementById("verifyModal").classList.remove("visible");
+}
+
+function submitVerificationCode() {
+    const boxes = document.querySelectorAll(".code-box");
+    const code = Array.from(boxes).map(b => b.value).join("");
+
+    if (code.length !== 6) {
+        document.getElementById("verifyMessage").innerText = "Code incomplet";
+        return;
+    }
+
+    fetch(`${API_URL}/auth/verify-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: verifyEmailAddress, code })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("verifyMessage").innerText = data.message;
+
+        if (data.success) {
+            alert("Email vérifié ✔ Vous pouvez maintenant vous connecter.");
+            closeVerifyPopup();
+        }
+    });
 }
 
 // =========================
-//  API URL (BACKEND RENDER)
+//  API URL
 // =========================
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
-//  REGISTER (AFFICHE EMAIL + MDP + OUVRE POPUP B)
+//  REGISTER (ENVOI EMAIL + POPUP B)
 // =========================
 function register() {
     const email = document.getElementById("email").value.trim();
@@ -39,14 +90,22 @@ function register() {
         return;
     }
 
-    // 🔥 MESSAGE QUI AFFICHE LES INFORMATIONS
-    alert(`Vous avez entré :\n\nEmail : ${email}\nMot de passe : ${password}`);
+    fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    })
+    .then(res => res.json())
+    .then(data => {
 
-    // 🔥 Fermer popup A
-    closeLogin();
+        if (data.needVerification === true) {
+            closeLogin();
+            openVerifyPopup(email);
+            return;
+        }
 
-    // 🔥 Ouvrir popup B
-    openPopupB();
+        alert(data.message);
+    });
 }
 
 // =========================
@@ -187,7 +246,7 @@ function normalize(str) {
 }
 
 // =========================
-//  LEVENSHTEIN (CORRIGÉ)
+//  LEVENSHTEIN
 // =========================
 function levenshtein(a, b) {
     const matrix = [];
@@ -233,7 +292,7 @@ window.addEventListener("scroll", handleScrollAnimations);
 window.addEventListener("load", handleScrollAnimations);
 
 // =========================
-//   RESET SEARCHBAR
+//  RESET SEARCHBAR
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".search-box input");
