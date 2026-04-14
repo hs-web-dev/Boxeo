@@ -17,7 +17,7 @@ function closeLogin() {
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
-//  REGISTER (SIMPLE, SANS VERIF EMAIL)
+//  REGISTER (AFFICHE EMAIL + MDP)
 // =========================
 function register() {
     const email = document.getElementById("email").value.trim();
@@ -28,22 +28,11 @@ function register() {
         return;
     }
 
-    fetch(`${API_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            alert("Compte créé !");
-            closeLogin();
-            checkLoginStatus();
-        } else {
-            alert(data.message);
-        }
-    });
+    // 🔥 MESSAGE QUI AFFICHE LES INFORMATIONS
+    alert(`Vous avez entré :\n\nEmail : ${email}\nMot de passe : ${password}`);
+
+    // 🔥 Pour l’instant on NE crée PAS le compte
+    // (On ajoutera la suite après)
 }
 
 // =========================
