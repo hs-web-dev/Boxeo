@@ -1,22 +1,24 @@
-/* ============================
-   POPUP LOGIN
-============================ */
+// =========================
+//  POPUP LOGIN
+// =========================
 function openLogin() {
-    document.getElementById("loginModal").classList.add("visible");
+    const modal = document.getElementById("loginModal");
+    if (modal) modal.classList.add("visible");
 }
 
 function closeLogin() {
-    document.getElementById("loginModal").classList.remove("visible");
+    const modal = document.getElementById("loginModal");
+    if (modal) modal.classList.remove("visible");
 }
 
-/* ============================
-   API URL
-============================ */
+// =========================
+//  API URL (BACKEND RENDER)
+// =========================
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
-/* ============================
-   REGISTER (AVEC VERIFICATION EMAIL)
-============================ */
+// =========================
+//  REGISTER (SIMPLE, SANS VERIF EMAIL)
+// =========================
 function register() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -33,25 +35,20 @@ function register() {
     })
     .then(res => res.json())
     .then(data => {
-
-        if (data.message === "Email déjà utilisé") {
-            alert("Email déjà utilisé");
-            return;
-        }
-
-        if (data.needVerification === true) {
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+            alert("Compte créé !");
             closeLogin();
-            openVerifyPopup(email);
-            return;
+            checkLoginStatus();
+        } else {
+            alert(data.message);
         }
-
-        alert(data.message);
     });
 }
 
-/* ============================
-   LOGIN
-============================ */
+// =========================
+//  LOGIN
+// =========================
 function login() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -79,18 +76,18 @@ function login() {
     });
 }
 
-/* ============================
-   LOGOUT
-============================ */
+// =========================
+//  LOGOUT
+// =========================
 function logout() {
     localStorage.removeItem("token");
     alert("Déconnecté");
     checkLoginStatus();
 }
 
-/* ============================
-   CHECK LOGIN + STAFF
-============================ */
+// =========================
+//  CHECK LOGIN + MODE STAFF
+// =========================
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
     const userStatus = document.getElementById("userStatus");
@@ -102,9 +99,9 @@ function checkLoginStatus() {
     if (oldStaffBtn) oldStaffBtn.remove();
 
     if (!token) {
-        userStatus.innerHTML = "Non connecté";
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
+        if (userStatus) userStatus.innerHTML = "Non connecté";
+        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "none";
         return;
     }
 
@@ -117,9 +114,9 @@ function checkLoginStatus() {
 
         if (!data.email) return;
 
-        userStatus.innerHTML = `Connecté : ${data.email}`;
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
+        if (userStatus) userStatus.innerHTML = `Connecté : ${data.email}`;
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "inline-block";
 
         if (data.role === "staff" || data.staffMaster === true) {
             const staffBtn = document.createElement("a");
@@ -133,9 +130,9 @@ function checkLoginStatus() {
 
 document.addEventListener("DOMContentLoaded", checkLoginStatus);
 
-/* ============================
-   SETTINGS
-============================ */
+// =========================
+//  GO TO SETTINGS
+// =========================
 function goToSettings() {
     const token = localStorage.getItem("token");
 
@@ -148,9 +145,9 @@ function goToSettings() {
     window.location.href = "settings.html";
 }
 
-/* ============================
-   DELETE ACCOUNT
-============================ */
+// =========================
+//  DELETE ACCOUNT
+// =========================
 function deleteAccount() {
     const token = localStorage.getItem("token");
 
@@ -175,9 +172,9 @@ function deleteAccount() {
     .catch(() => alert("Erreur serveur"));
 }
 
-/* ============================
-   NORMALISATION
-============================ */
+// =========================
+//  NORMALISATION
+// =========================
 function normalize(str) {
     return str
         .normalize("NFD")
@@ -186,9 +183,9 @@ function normalize(str) {
         .trim();
 }
 
-/* ============================
-   LEVENSHTEIN
-============================ */
+// =========================
+//  LEVENSHTEIN (CORRIGÉ)
+// =========================
 function levenshtein(a, b) {
     const matrix = [];
     const alen = a.length;
@@ -215,10 +212,9 @@ function levenshtein(a, b) {
     return matrix[alen][blen];
 }
 
-
-/* ============================
-   ANIMATIONS
-============================ */
+// =========================
+//  ANIMATIONS
+// =========================
 const animatedElements = document.querySelectorAll(".fade-up, .fade-in");
 
 function handleScrollAnimations() {
@@ -233,9 +229,9 @@ function handleScrollAnimations() {
 window.addEventListener("scroll", handleScrollAnimations);
 window.addEventListener("load", handleScrollAnimations);
 
-/* ============================
-   SEARCHBAR RESET
-============================ */
+// =========================
+//  RESET SEARCHBAR
+// =========================
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".search-box input");
     if (searchInput) {
@@ -244,14 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* ============================
-   LEAFLET MAP
-============================ */
+// =========================
+//  CARTE LEAFLET
+// =========================
 L.Marker.prototype.options.renderer = L.canvas();
 
 if (document.getElementById("map") && typeof L !== "undefined") {
 
-    const map = L.map('map', { preferCanvas: true }).setView([48.8566, 2.3522], 12);
+    const map = L.map('map', {
+        preferCanvas: true
+    }).setView([48.8566, 2.3522], 12);
 
     const lightStyle = L.tileLayer(
         'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
@@ -267,7 +265,9 @@ if (document.getElementById("map") && typeof L !== "undefined") {
         popupAnchor: [0, -60]
     });
 
-    const garagesLayer = L.layerGroup({ renderer: L.canvas() }).addTo(map);
+    const garagesLayer = L.layerGroup({
+        renderer: L.canvas()
+    }).addTo(map);
 
     let garages = [];
 
@@ -348,72 +348,15 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     const typeSelect = document.querySelector(".search-box select");
     const searchBtn = document.getElementById("searchBtn");
 
-    if (searchInput) searchInput.addEventListener("input", refreshMarkers);
-    if (typeSelect) typeSelect.addEventListener("change", refreshMarkers);
-    if (searchBtn) searchBtn.addEventListener("click", refreshMarkers);
-}
-
-/* ============================
-   POPUP VERIFICATION EMAIL (6 CASES)
-============================ */
-
-let verifyEmailAddress = "";
-
-// OUVRIR POPUP B
-function openVerifyPopup(email) {
-    verifyEmailAddress = email;
-
-    const modal = document.getElementById("verifyModal");
-    modal.classList.add("visible");
-
-    const boxes = document.querySelectorAll(".code-box");
-
-    boxes.forEach(box => box.value = "");
-
-    boxes.forEach((box, index) => {
-        box.addEventListener("input", () => {
-            if (box.value.length === 1 && index < boxes.length - 1) {
-                boxes[index + 1].focus();
-            }
-        });
-
-        box.addEventListener("keydown", (e) => {
-            if (e.key === "Backspace" && box.value === "" && index > 0) {
-                boxes[index - 1].focus();
-            }
-        });
-    });
-
-    boxes[0].focus();
-}
-
-// FERMER POPUP B
-function closeVerifyPopup() {
-    document.getElementById("verifyModal").classList.remove("visible");
-}
-
-// ENVOI DU CODE
-function submitVerificationCode() {
-    const boxes = document.querySelectorAll(".code-box");
-    const code = Array.from(boxes).map(b => b.value).join("");
-
-    if (code.length !== 6) {
-        document.getElementById("verifyMessage").innerText = "Code incomplet";
-        return;
+    if (searchInput) {
+        searchInput.addEventListener("input", refreshMarkers);
     }
 
-    fetch(`${API_URL}/auth/verify-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: verifyEmailAddress, code })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("verifyMessage").innerText = data.message;
+    if (typeSelect) {
+        typeSelect.addEventListener("change", refreshMarkers);
+    }
 
-        if (data.message.includes("✔")) {
-            alert("Email vérifié ! Vous pouvez maintenant vous connecter.");
-            closeVerifyPopup();
-        }
-    });
+    if (searchBtn) {
+        searchBtn.addEventListener("click", refreshMarkers);
+    }
 }
