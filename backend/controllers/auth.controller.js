@@ -88,7 +88,7 @@ export const verifyEmail = async (req, res) => {
 };
 
 // =========================
-//  LOGIN (NE DEMANDE PLUS JAMAIS DE VERIFICATION EMAIL)
+//  LOGIN (NE BLOQUE PLUS JAMAIS)
 // =========================
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -98,8 +98,6 @@ export const login = async (req, res) => {
         if (!user) return res.json({ message: "Utilisateur introuvable" });
 
         // ❌ SUPPRIMÉ : blocage si email non vérifié
-        // if (!user.emailVerified)
-        //     return res.json({ message: "Veuillez vérifier votre email avant de vous connecter." });
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.json({ message: "Mot de passe incorrect" });
@@ -169,11 +167,13 @@ export const removeStaff = async (req, res) => {
 };
 
 // =========================
-//  DELETE ACCOUNT
+//  DELETE ACCOUNT (VERSION QUI SUPPRIME VRAIMENT L'EMAIL)
 // =========================
 export const deleteAccount = async (req, res) => {
     try {
-        await User.findByIdAndDelete(req.user.id);
+        // 🔥 Supprimer par email = 100% fiable
+        await User.findOneAndDelete({ email: req.user.email });
+
         res.json({ message: "Compte supprimé avec succès" });
     } catch (err) {
         res.status(500).json({ message: "Erreur serveur" });
