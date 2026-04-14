@@ -12,12 +12,23 @@ function closeLogin() {
 }
 
 // =========================
+//  POPUP B (TEST)
+// =========================
+function openPopupB() {
+    document.getElementById("popupB").classList.add("visible");
+}
+
+function closePopupB() {
+    document.getElementById("popupB").classList.remove("visible");
+}
+
+// =========================
 //  API URL (BACKEND RENDER)
 // =========================
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
-//  REGISTER (AFFICHE EMAIL + MDP)
+//  REGISTER (AFFICHE EMAIL + MDP + OUVRE POPUP B)
 // =========================
 function register() {
     const email = document.getElementById("email").value.trim();
@@ -31,8 +42,11 @@ function register() {
     // 🔥 MESSAGE QUI AFFICHE LES INFORMATIONS
     alert(`Vous avez entré :\n\nEmail : ${email}\nMot de passe : ${password}`);
 
-    // 🔥 Pour l’instant on NE crée PAS le compte
-    // (On ajoutera la suite après)
+    // 🔥 Fermer popup A
+    closeLogin();
+
+    // 🔥 Ouvrir popup B
+    openPopupB();
 }
 
 // =========================
@@ -219,7 +233,7 @@ window.addEventListener("scroll", handleScrollAnimations);
 window.addEventListener("load", handleScrollAnimations);
 
 // =========================
-//  RESET SEARCHBAR
+//   RESET SEARCHBAR
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".search-box input");
