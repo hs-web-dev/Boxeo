@@ -1,97 +1,40 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 
 // =========================
-//  GENERATE 6 DIGIT CODE
-// =========================
-function generateCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// =========================
-//  SEND EMAIL
-// =========================
-async function sendVerificationEmail(to, code) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-        }
-    });
-
-    await transporter.sendMail({
-        from: process.env.MAIL_USER,
-        to,
-        subject: "Votre code de vérification Boxeo",
-        text: `Votre code de vérification est : ${code}`
-    });
-}
-
-// =========================
-//  REGISTER (AVEC VERIFICATION EMAIL)
+//  REGISTER (SIMPLE, SANS EMAIL)
 // =========================
 export const register = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // ❌ Si l'email existe déjà → on bloque
-        const exists = await User.findOne({ email });
-        if (exists) {
-            return res.json({ message: "Email déjà utilisé" });
-        }
+        // 🔥 Si un compte existe déjà avec cet email, on le supprime
+        await User.deleteOne({ email });
 
         const hashed = await bcrypt.hash(password, 10);
         const count = await User.countDocuments();
 
-        // 🔥 Génération du code
-        const code = generateCode();
-
-        // 🔥 Création du compte NON vérifié
         const user = await User.create({
             email,
             password: hashed,
             role: "user",
             staffNumber: count + 1,
-            emailCode: code,
-            emailVerified: false
+            emailVerified: true
         });
 
-        // 🔥 Envoi email
-        await sendVerificationEmail(email, code);
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-        // 🔥 Le frontend doit ouvrir le popup B
-        res.json({
-            message: "Compte créé ✔ Vérifiez votre email.",
-            needVerification: true
-        });
+        res.json({ message: "Compte créé ✔", token });
 
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Erreur serveur" });
     }
-};
-
-// =========================
-//  VERIFY EMAIL
-// =========================
-export const verifyEmail = async (req, res) => {
-    const { email, code } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-    if (user.emailCode !== code) {
-        return res.json({ message: "Code incorrect ❌" });
-    }
-
-    user.emailVerified = true;
-    user.emailCode = null;
-    await user.save();
-
-    res.json({ message: "Email vérifié ✔" });
 };
 
 // =========================
@@ -103,10 +46,6 @@ export const login = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) return res.json({ message: "Utilisateur introuvable" });
-
-        if (!user.emailVerified) {
-            return res.json({ message: "Veuillez vérifier votre email avant de vous connecter." });
-        }
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.json({ message: "Mot de passe incorrect" });
@@ -135,6 +74,13 @@ export const me = async (req, res) => {
         staffNumber: req.user.staffNumber,
         staffMaster: isMaster
     });
+};
+
+// =========================
+//  VERIFY EMAIL (VIDE MAIS EXPORTÉ POUR ÉVITER L'ERREUR)
+// =========================
+export const verifyEmail = async (req, res) => {
+    res.json({ message: "Vérification désactivée ✔" });
 };
 
 // =========================
