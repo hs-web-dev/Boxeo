@@ -371,3 +371,86 @@ footer {
     font-size: 0.85rem;
     color: #f97316;
 }
+
+/* ========================= */
+/* POPUP VERIFICATION EMAIL (6 CASES) */
+/* ========================= */
+
+#verifyModal.visible {
+    display: flex;
+}
+
+.verify-box {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 20px;
+    width: 340px;
+    text-align: center;
+    transform: translateY(40px) scale(0.9);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(.16,.84,.44,1),
+                opacity 0.35s ease;
+}
+
+#verifyModal.visible .verify-box {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.code-input {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.code-box {
+    width: 45px;
+    height: 55px;
+    font-size: 26px;
+    text-align: center;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fff;
+    outline: none;
+    transition: 0.2s;
+}
+
+.code-box:focus {
+    border-color: #ff6600;
+    box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+}
+
+.btn-verify {
+    width: 100%;
+    padding: 12px;
+    background: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 10px;
+}
+
+.btn-verify:hover {
+    opacity: 0.85;
+}
+
+.btn-close {
+    width: 100%;
+    padding: 12px;
+    background: #334155;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.verify-message {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #f97316;
+}

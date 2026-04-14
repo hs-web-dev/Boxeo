@@ -143,20 +143,28 @@
     </div>
 </div>
 
-<!-- POPUP VÉRIFICATION EMAIL -->
+<!-- POPUP VÉRIFICATION EMAIL (NOUVELLE VERSION) -->
 <div id="verifyModal" class="modal">
-    <div class="modal-content">
-        <h2>Vérification email</h2>
-        <p>Un code à 6 chiffres vous a été envoyé.</p>
+    <div class="modal-content verify-box">
+        <h2>Vérification de l'email</h2>
+        <p>Entrez le code reçu par email :</p>
 
-        <input id="verifyCode" type="text" placeholder="Code à 6 chiffres">
+        <div class="code-input">
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+            <input maxlength="1" class="code-box" />
+        </div>
 
-        <button onclick="verifyEmailCode()">Valider</button>
-        <button onclick="closeVerify()">Fermer</button>
+        <button class="btn-verify" onclick="submitVerificationCode()">Valider</button>
+        <button onclick="closeVerifyPopup()" class="btn-close">Fermer</button>
 
-        <p id="verifyMessage"></p>
+        <p id="verifyMessage" class="verify-message"></p>
     </div>
 </div>
+
 
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
