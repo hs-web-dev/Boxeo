@@ -172,6 +172,9 @@ function deleteAccount() {
 
     if (!confirm("Voulez-vous vraiment supprimer votre compte ?")) return;
 
+    // 🔥 IMPORTANT : supprimer le token AVANT l'appel backend
+    localStorage.removeItem("token");
+
     fetch(`${API_URL}/auth/delete`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
@@ -179,7 +182,6 @@ function deleteAccount() {
     .then(res => res.json())
     .then(data => {
         alert(data.message);
-        localStorage.removeItem("token");
         window.location.href = "index.html";
     })
     .catch(() => alert("Erreur serveur"));
