@@ -13,15 +13,21 @@ connectDB();
 const app = express();
 
 // =========================
-//  CORS FIX POUR RENDER
+//  CORS FIX COMPLET POUR RENDER
 // =========================
 app.use(cors({
   origin: [
     "https://boxeo-frontend.onrender.com",
     "http://localhost:3000"
   ],
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  preflightContinue: false
 }));
+
+// Obligatoire pour que Render accepte les requêtes OPTIONS
+app.options("*", cors());
 
 // =========================
 //  PARSERS
