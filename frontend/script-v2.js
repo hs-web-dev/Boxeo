@@ -17,7 +17,7 @@ function closeLogin() {
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
-//  REGISTER
+//  REGISTER (VERSION AVEC VERIFICATION EMAIL)
 // =========================
 function register() {
     const email = document.getElementById("email").value.trim();
@@ -35,16 +35,28 @@ function register() {
     })
     .then(res => res.json())
     .then(data => {
+
+        // 🔥 CAS 1 : le backend demande une vérification email
+        if (data.needVerification === true) {
+            closeLogin();
+            openVerifyPopup(email); // <-- ouvre le popup
+            return;
+        }
+
+        // 🔥 CAS 2 : ancien système (token direct)
         if (data.token) {
             localStorage.setItem("token", data.token);
             alert("Compte créé !");
             closeLogin();
             checkLoginStatus();
-        } else {
-            alert(data.message);
+            return;
         }
+
+        // 🔥 CAS 3 : erreur
+        alert(data.message);
     });
 }
+
 
 // =========================
 //  LOGIN
@@ -86,7 +98,7 @@ function logout() {
 }
 
 // =========================
-//  CHECK LOGIN + MODE STAFF (FIX COMPLET)
+//  CHECK LOGIN + MODE STAFF
 // =========================
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
@@ -95,7 +107,7 @@ function checkLoginStatus() {
     const logoutBtn = document.getElementById("logoutBtn");
     const nav = document.querySelector(".nav");
 
-    // 🔥 FIX : supprimer le bouton staff AVANT TOUT
+    // 🔥 Supprimer le bouton staff AVANT TOUT
     const oldStaffBtn = document.querySelector(".staff-link");
     if (oldStaffBtn) oldStaffBtn.remove();
 
@@ -119,7 +131,7 @@ function checkLoginStatus() {
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-        // 🔥 FIX : ajouter le bouton staff UNIQUEMENT si staff ou master
+        // 🔥 Ajouter bouton staff uniquement si staff ou master
         if (data.role === "staff" || data.staffMaster === true) {
             const staffBtn = document.createElement("a");
             staffBtn.href = "staff.html";
@@ -242,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================
-//  CARTE LEAFLET (FIX COMPLET)
+//  CARTE LEAFLET
 // =========================
 L.Marker.prototype.options.renderer = L.canvas();
 
@@ -360,4 +372,38 @@ if (document.getElementById("map") && typeof L !== "undefined") {
     if (searchBtn) {
         searchBtn.addEventListener("click", refreshMarkers);
     }
+}
+
+// =========================
+//  POPUP VERIFICATION EMAIL
+// =========================
+
+let verifyEmailAddress = "";
+
+function openVerifyPopup(email) {
+    verifyEmailAddress = email;
+    document.getElementById("verifyModal").classList.add("visible");
+}
+
+function closeVerify() {
+    document.getElementById("verifyModal").classList.remove("visible");
+}
+
+function verifyEmailCode() {
+    const code = document.getElementById("verifyCode").value.trim();
+
+    fetch(`${API_URL}/auth/verify-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: verifyEmailAddress, code })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("verifyMessage").innerText = data.message;
+
+        if (data.message.includes("✔")) {
+            alert("Email vérifié ! Vous pouvez maintenant vous connecter.");
+            closeVerify();
+        }
+    });
 }

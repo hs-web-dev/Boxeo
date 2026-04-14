@@ -88,7 +88,7 @@ export const verifyEmail = async (req, res) => {
 };
 
 // =========================
-//  LOGIN
+//  LOGIN (NE DEMANDE PLUS JAMAIS DE VERIFICATION EMAIL)
 // =========================
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -97,8 +97,9 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.json({ message: "Utilisateur introuvable" });
 
-        if (!user.emailVerified)
-            return res.json({ message: "Veuillez vérifier votre email avant de vous connecter." });
+        // ❌ SUPPRIMÉ : blocage si email non vérifié
+        // if (!user.emailVerified)
+        //     return res.json({ message: "Veuillez vérifier votre email avant de vous connecter." });
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.json({ message: "Mot de passe incorrect" });
