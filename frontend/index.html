@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boxeo – Location de garages à Paris</title>
 
-    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-    <!-- Style principal -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Background shapes -->
 <div class="bg-shape bg1"></div>
 <div class="bg-shape bg2"></div>
 
-<!-- HEADER -->
 <header class="header fade-in">
     <div class="logo">Boxeo</div>
 
@@ -27,16 +22,13 @@
         <a href="#">Contact</a>
         <a id="settingsBtn" onclick="goToSettings()">Paramètres</a>
 
-        <!-- Zone d'état utilisateur -->
         <span id="userStatus"></span>
 
-        <!-- Boutons -->
         <button id="loginBtn" class="login-btn" onclick="openLogin()">Se connecter</button>
         <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display:none;">Déconnexion</button>
     </nav>
 </header>
 
-<!-- HERO -->
 <section class="hero fade-in">
     <h1>
         Louez un <span>garage sécurisé</span><br>
@@ -56,18 +48,14 @@
     </div>
 </section>
 
-<!-- MAP -->
 <section class="map-section fade-up">
     <h2>Garages disponibles à Paris</h2>
 
-    <button id="toggleMapStyle" class="map-btn">
-        Changer le style de la carte
-    </button>
+    <button id="toggleMapStyle" class="map-btn">Changer le style de la carte</button>
 
     <div id="map"></div>
 </section>
 
-<!-- FEATURES -->
 <section class="features fade-up">
     <div class="feature">
         <div class="icon">🔒</div>
@@ -88,10 +76,8 @@
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="fade-in">
     <div class="footer-content">
-
         <div class="footer-col">
             <h4>Boxeo</h4>
             <a href="#">À propos</a>
@@ -119,7 +105,6 @@
             <a href="#">Twitter</a>
             <a href="#">LinkedIn</a>
         </div>
-
     </div>
 
     <div class="footer-bottom">
@@ -165,7 +150,6 @@
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script-v2.js"></script>
 

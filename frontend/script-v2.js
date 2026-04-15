@@ -16,7 +16,6 @@ function closeLogin() {
 // =========================
 let verifyEmailAddress = "";
 
-// OUVRIR POPUP B
 function openVerifyPopup(email) {
     verifyEmailAddress = email;
 
@@ -79,7 +78,7 @@ function submitVerificationCode() {
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 
 // =========================
-//  REGISTER (ENVOI EMAIL + POPUP B)
+//  REGISTER
 // =========================
 function register() {
     const email = document.getElementById("email").value.trim();
@@ -148,7 +147,7 @@ function logout() {
 }
 
 // =========================
-//  CHECK LOGIN + MODE STAFF
+//  CHECK LOGIN + STAFF
 // =========================
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
@@ -260,7 +259,7 @@ function levenshtein(a, b) {
     for (let j = 0; j <= blen; j++) matrix[0][j] = j;
 
     for (let i = 1; i <= alen; i++) {
-        for (let j = 1; j <= blen; j++) {
+        for (let j = 1; j <= bllen; j++) {
             const cost = a[i - 1] === b[j - 1] ? 0 : 1;
 
             matrix[i][j] = Math.min(
