@@ -1,32 +1,47 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-export const protect = async (req, res, next) => {
+// =========================
+//  PROTECT (auth obligatoire)
+// =========================
+export async function protect(req, res, next) {
     const header = req.headers.authorization;
-    if (!header) return res.json({ message: "Token manquant" });
+
+    if (!header || !header.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Token manquant" });
+    }
 
     const token = header.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.id;
-        req.user = await User.findById(decoded.id);
+
+        const user = await User.findById(decoded.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur introuvable" });
+        }
+
+        req.user = user;
         next();
     } catch (err) {
-        res.json({ message: "Token invalide" });
+        res.status(401).json({ message: "Token invalide" });
     }
-};
+}
 
-export const staffOnly = (req, res, next) => {
-    if (req.user.role !== "staff") {
-        return res.json({ message: "Accès réservé au staff" });
-    }
-    next();
-};
+// =========================
+//  STAFF ONLY
+// =========================
+export function staffOnly(req, res, next) {
+    if (req.user.role === "staff") return next();
+    if (req.user.email === process.env.STAFF_MASTER_EMAIL) return next();
+    return res.status(403).json({ message: "Accès réservé au staff" });
+}
 
-export const staffMasterOnly = (req, res, next) => {
-    if (req.user.email !== process.env.STAFF_MASTER_EMAIL) {
-        return res.json({ message: "Accès réservé au Staff Master" });
-    }
-    next();
-};
+// =========================
+//  STAFF MASTER ONLY
+// =========================
+export function staffMasterOnly(req, res, next) {
+    if (req.user.email === process.env.STAFF_MASTER_EMAIL) return next();
+    return res.status(403).json({ message: "Accès réservé au Staff Master" });
+}
