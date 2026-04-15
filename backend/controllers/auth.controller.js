@@ -1,18 +1,37 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import * as Brevo from "@getbrevo/brevo";
 
 // =========================
-//  CONFIG BREVO (VERSION QUI MARCHE)
+//  SEND EMAIL VIA BREVO API (HTTP)
 // =========================
+async function sendVerificationEmail(to, code) {
+    const payload = {
+        sender: { email: process.env.MAIL_FROM },
+        to: [{ email: to }],
+        subject: "Votre code de vérification Boxeo",
+        htmlContent: `
+            <h2>Bienvenue sur Boxeo</h2>
+            <p>Voici votre code de vérification :</p>
+            <h1 style="font-size:32px; letter-spacing:4px;">${code}</h1>
+        `
+    };
 
-const brevoClient = new Brevo.TransactionalEmailsApiApi();
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "api-key": process.env.BREVO_API_KEY
+        },
+        body: JSON.stringify(payload)
+    });
 
-brevoClient.setApiKey(
-    Brevo.TransactionalEmailsApiApiApiKeys.apiKey,
-    process.env.BREVO_API_KEY
-);
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Brevo error:", errorText);
+        throw new Error("Erreur envoi email");
+    }
+}
 
 // =========================
 //  REGISTER
@@ -37,17 +56,8 @@ export const register = async (req, res) => {
             emailCode: code
         });
 
-        // 🔥 ENVOI EMAIL AVEC BREVO
-        await brevoClient.sendTransacEmail({
-            sender: { email: process.env.MAIL_FROM },
-            to: [{ email }],
-            subject: "Votre code de vérification Boxeo",
-            htmlContent: `
-                <h2>Bienvenue sur Boxeo</h2>
-                <p>Voici votre code de vérification :</p>
-                <h1 style="font-size:32px; letter-spacing:4px;">${code}</h1>
-            `
-        });
+        // 🔥 ENVOI EMAIL VIA API HTTP
+        await sendVerificationEmail(email, code);
 
         res.json({ needVerification: true });
 
