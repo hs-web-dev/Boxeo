@@ -7,10 +7,10 @@ import * as Brevo from "@getbrevo/brevo";
 //  CONFIG BREVO (VERSION QUI MARCHE)
 // =========================
 
-const brevoClient = new Brevo.TransactionalEmailsApi();
+const brevoClient = new Brevo.TransactionalEmailsApiApi();
 
 brevoClient.setApiKey(
-    Brevo.TransactionalEmailsApiApiKeys.apiKey,
+    Brevo.TransactionalEmailsApiApiApiKeys.apiKey,
     process.env.BREVO_API_KEY
 );
 
@@ -21,7 +21,6 @@ export const register = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Si un compte existe déjà → on le supprime
         await User.deleteOne({ email });
 
         const hashed = await bcrypt.hash(password, 10);
