@@ -1,18 +1,16 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import Brevo from "@getbrevo/brevo";
 
 // =========================
-//  MAILER
+//  CONFIG BREVO
 // =========================
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-    }
-});
+const brevoClient = new Brevo.TransactionalEmailsApi();
+brevoClient.setApiKey(
+    Brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 
 // =========================
 //  REGISTER
@@ -38,12 +36,16 @@ export const register = async (req, res) => {
             emailCode: code
         });
 
-        // Envoi email
-        await transporter.sendMail({
-            from: process.env.MAIL_USER,
-            to: email,
+        // 🔥 ENVOI EMAIL AVEC BREVO
+        await brevoClient.sendTransacEmail({
+            sender: { email: process.env.MAIL_FROM },
+            to: [{ email }],
             subject: "Votre code de vérification Boxeo",
-            text: `Votre code de vérification est : ${code}`
+            htmlContent: `
+                <h2>Bienvenue sur Boxeo</h2>
+                <p>Voici votre code de vérification :</p>
+                <h1 style="font-size:32px; letter-spacing:4px;">${code}</h1>
+            `
         });
 
         res.json({ needVerification: true });
