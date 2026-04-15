@@ -3,9 +3,8 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import * as Brevo from "@getbrevo/brevo";
 
-
 // =========================
-//  CONFIG BREVO
+//  CONFIG BREVO (VERSION QUI MARCHE)
 // =========================
 
 const brevoClient = new Brevo.TransactionalEmailsApi();
@@ -14,7 +13,6 @@ brevoClient.setApiKey(
     Brevo.TransactionalEmailsApiApiKeys.apiKey,
     process.env.BREVO_API_KEY
 );
-
 
 // =========================
 //  REGISTER
@@ -44,19 +42,18 @@ export const register = async (req, res) => {
         await brevoClient.sendTransacEmail({
             sender: { email: process.env.MAIL_FROM },
             to: [{ email }],
-            ubject: "Votre code de vérification Boxeo",
+            subject: "Votre code de vérification Boxeo",
             htmlContent: `
                 <h2>Bienvenue sur Boxeo</h2>
                 <p>Voici votre code de vérification :</p>
                 <h1 style="font-size:32px; letter-spacing:4px;">${code}</h1>
-    `
-});
-
+            `
+        });
 
         res.json({ needVerification: true });
 
     } catch (err) {
-        console.log(err);
+        console.log("Erreur REGISTER :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -81,6 +78,7 @@ export const verifyEmail = async (req, res) => {
         res.json({ success: true, message: "Email vérifié ✔" });
 
     } catch (err) {
+        console.log("Erreur VERIFY :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -110,6 +108,7 @@ export const login = async (req, res) => {
         res.json({ message: "Connexion réussie ✔", token });
 
     } catch (err) {
+        console.log("Erreur LOGIN :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -131,6 +130,7 @@ export const me = async (req, res) => {
         });
 
     } catch (err) {
+        console.log("Erreur ME :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -151,6 +151,7 @@ export const makeStaff = async (req, res) => {
         res.json({ message: `${email} est maintenant STAFF ✔` });
 
     } catch (err) {
+        console.log("Erreur MAKE STAFF :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -171,6 +172,7 @@ export const removeStaff = async (req, res) => {
         res.json({ message: `${email} n'est plus STAFF ❌` });
 
     } catch (err) {
+        console.log("Erreur REMOVE STAFF :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
@@ -183,6 +185,7 @@ export const deleteAccount = async (req, res) => {
         await User.deleteOne({ _id: req.userId });
         res.json({ message: "Compte supprimé avec succès" });
     } catch (err) {
+        console.log("Erreur DELETE ACCOUNT :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
