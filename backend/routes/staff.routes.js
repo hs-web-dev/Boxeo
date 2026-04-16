@@ -1,21 +1,18 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import { checkStaffId, checkStaffPassword } from "../middlewares/staffDashboard.middleware.js";
+import User from "../models/User.js";
+import { protect, staffMasterOnly } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// PAGE LOGIN STAFF (protégée par ID)
-router.get("/:staffId", checkStaffId, (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/staff-login.html"));
-});
-
-// VALIDATION MOT DE PASSE STAFF
-router.post("/:staffId/login", checkStaffId, express.urlencoded({ extended: true }), checkStaffPassword, (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/staff-dashboard.html"));
+// 🔥 Liste des utilisateurs STAFF
+router.get("/list", protect, staffMasterOnly, async (req, res) => {
+    try {
+        const staff = await User.find({ role: "staff" }).select("email");
+        res.json(staff);
+    } catch (err) {
+        console.log("Erreur STAFF LIST :", err);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
 });
 
 export default router;

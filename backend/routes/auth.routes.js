@@ -18,9 +18,12 @@ router.post("/verify-email", verifyEmail);
 router.post("/login", login);
 router.get("/me", protect, me);
 router.delete("/delete", protect, deleteAccount);
+
+// 🔥 Routes staff
 router.post("/make-staff", protect, staffMasterOnly, makeStaff);
 router.post("/remove-staff", protect, staffMasterOnly, removeStaff);
 
+// 🔥 Zone staff
 router.get("/staff-zone", protect, staffOnly, (req, res) => {
     res.json({ message: "Bienvenue dans la zone staff" });
 });

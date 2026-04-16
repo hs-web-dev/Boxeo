@@ -27,6 +27,7 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 🔥 Routes API
 app.use("/api/auth", authRoutes);
 app.use("/api/garages", garageRoutes);
 app.use("/api/staff", staffRoutes);
