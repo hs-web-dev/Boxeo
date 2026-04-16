@@ -47,6 +47,9 @@ function closeVerifyPopup() {
     document.getElementById("verifyModal").classList.remove("visible");
 }
 
+// =========================
+//  SUBMIT VERIFICATION CODE (CORRIGÉ + AUTO LOGIN)
+// =========================
 function submitVerificationCode() {
     const boxes = document.querySelectorAll(".code-box");
     const code = Array.from(boxes).map(b => b.value).join("");
@@ -66,8 +69,28 @@ function submitVerificationCode() {
         document.getElementById("verifyMessage").innerText = data.message;
 
         if (data.success) {
-            alert("Email vérifié ✔ Vous pouvez maintenant vous connecter.");
-            closeVerifyPopup();
+
+            // 🔥 Connexion automatique après vérification
+            const password = document.getElementById("password").value;
+
+            fetch(`${API_URL}/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: verifyEmailAddress, password })
+            })
+            .then(res => res.json())
+            .then(loginData => {
+                if (loginData.token) {
+                    localStorage.setItem("token", loginData.token);
+                    closeVerifyPopup();
+                    checkLoginStatus();
+                    alert("Email vérifié ✔ Vous êtes maintenant connecté !");
+                } else {
+                    alert("Email vérifié ✔ Connectez-vous maintenant.");
+                    closeVerifyPopup();
+                    openLogin();
+                }
+            });
         }
     });
 }
@@ -272,7 +295,6 @@ function levenshtein(a, b) {
 
     return matrix[alen][blen];
 }
-
 
 // =========================
 //  ANIMATIONS
