@@ -337,7 +337,7 @@ footer {
    POPUP VERIFICATION EMAIL
 ------------------------------ */
 #verifyModal .modal-content {
-    width: 320px;
+    width: 420px; /* 🔥 élargi */
     text-align: center;
 }
 
@@ -384,7 +384,7 @@ footer {
     background: #1e293b;
     padding: 30px;
     border-radius: 20px;
-    width: 340px;
+    width: 420px; /* 🔥 élargi */
     text-align: center;
     transform: translateY(40px) scale(0.9);
     opacity: 0;
@@ -425,7 +425,6 @@ footer {
     box-shadow: 0 0 8px rgba(255, 120, 0, 0.5);
     outline: none;
 }
-
 
 .btn-verify {
     width: 100%;
