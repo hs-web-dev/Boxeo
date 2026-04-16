@@ -48,7 +48,7 @@ function closeVerifyPopup() {
 }
 
 // =========================
-//  SUBMIT VERIFICATION CODE (CORRIGÉ + AUTO LOGIN)
+//  SUBMIT VERIFICATION CODE (AUTO LOGIN + RELOAD)
 // =========================
 function submitVerificationCode() {
     const boxes = document.querySelectorAll(".code-box");
@@ -85,6 +85,7 @@ function submitVerificationCode() {
                     closeVerifyPopup();
                     checkLoginStatus();
                     alert("Email vérifié ✔ Vous êtes maintenant connecté !");
+                    window.location.reload(); // 🔥 force la mise à jour du header
                 } else {
                     alert("Email vérifié ✔ Connectez-vous maintenant.");
                     closeVerifyPopup();
@@ -154,6 +155,7 @@ function login() {
             alert("Connexion réussie !");
             closeLogin();
             checkLoginStatus();
+            window.location.reload(); // 🔥 pour mettre à jour le header
         } else {
             alert(data.message);
         }
@@ -167,6 +169,7 @@ function logout() {
     localStorage.removeItem("token");
     alert("Déconnecté");
     checkLoginStatus();
+    window.location.reload();
 }
 
 // =========================
