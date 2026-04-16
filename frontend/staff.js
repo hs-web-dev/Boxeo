@@ -2,6 +2,15 @@ const API_URL = "https://boxeo-p8t4.onrender.com/api";
 const token = localStorage.getItem("token");
 
 // =========================
+//  SCROLL SMOOTH POUR SIDEBAR
+// =========================
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+// =========================
 //  PROTECTION STAFF
 // =========================
 async function checkStaff() {
@@ -25,9 +34,9 @@ async function checkStaff() {
 
     document.getElementById("staffEmail").innerHTML = "Connecté : " + data.email;
 
-    // 🔥 Zone promotion visible uniquement pour le MASTER
     if (data.staffMaster === true) {
         document.getElementById("promotionZone").style.display = "block";
+        loadStaffList(); // 🔥 charge la liste staff pour autocomplétion
     }
 }
 
@@ -70,9 +79,13 @@ addressInput.addEventListener("input", async () => {
 // =========================
 //  CHARGER LES GARAGES
 // =========================
+let allGarages = [];
+
 async function loadGarages() {
     const res = await fetch(`${API_URL}/garages`);
     const garages = await res.json();
+
+    allGarages = garages; // 🔥 pour autocomplétion
 
     const list = document.getElementById("garageList");
     list.innerHTML = "";
@@ -96,6 +109,34 @@ async function loadGarages() {
 }
 
 loadGarages();
+
+// =========================
+//  AUTOCOMPLÉTION GARAGES
+// =========================
+const garageSearchInput = document.getElementById("garageSearchInput");
+const garageSearchSuggestions = document.getElementById("garageSearchSuggestions");
+
+garageSearchInput.addEventListener("input", () => {
+    const q = garageSearchInput.value.toLowerCase();
+    garageSearchSuggestions.innerHTML = "";
+
+    if (q.length < 2) return;
+
+    const matches = allGarages.filter(g =>
+        g.name.toLowerCase().includes(q) ||
+        g.address.toLowerCase().includes(q)
+    );
+
+    matches.forEach(g => {
+        const div = document.createElement("div");
+        div.innerHTML = `<b>${g.name}</b><br>${g.address}`;
+        div.onclick = () => {
+            editGarage(g._id);
+            garageSearchSuggestions.innerHTML = "";
+        };
+        garageSearchSuggestions.appendChild(div);
+    });
+});
 
 // =========================
 //  AJOUT / MODIFICATION
@@ -181,10 +222,47 @@ async function promoteUser() {
 }
 
 // =========================
+//  AUTOCOMPLÉTION STAFF
+// =========================
+let staffList = [];
+
+async function loadStaffList() {
+    const res = await fetch(`${API_URL}/staff/list`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    staffList = await res.json();
+}
+
+const removeEmailInput = document.getElementById("removeEmail");
+const removeStaffSuggestions = document.getElementById("removeStaffSuggestions");
+
+removeEmailInput.addEventListener("input", () => {
+    const q = removeEmailInput.value.toLowerCase();
+    removeStaffSuggestions.innerHTML = "";
+
+    if (q.length < 2) return;
+
+    const matches = staffList.filter(u =>
+        u.email.toLowerCase().includes(q)
+    );
+
+    matches.forEach(u => {
+        const div = document.createElement("div");
+        div.innerText = u.email;
+        div.onclick = () => {
+            removeEmailInput.value = u.email;
+            removeStaffSuggestions.innerHTML = "";
+        };
+        removeStaffSuggestions.appendChild(div);
+    });
+});
+
+// =========================
 //  RETIRER UN UTILISATEUR DU STAFF
 // =========================
 async function removeUser() {
-    const email = document.getElementById("removeEmail").value.trim();
+    const email = removeEmailInput.value.trim();
     if (!email) return alert("Entrez un email");
 
     const res = await fetch(`${API_URL}/auth/remove-staff`, {

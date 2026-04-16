@@ -8,70 +8,110 @@
 </head>
 <body>
 
-<div class="container">
+<div class="sidebar">
+    <h2>📦 Staff</h2>
+    <button onclick="scrollToSection('section-info')">Informations</button>
+    <button onclick="scrollToSection('section-staff')">Gestion du staff</button>
+    <button onclick="scrollToSection('section-form')">Ajouter / Modifier garage</button>
+    <button onclick="scrollToSection('section-garages')">Garages existants</button>
+    <button onclick="logout()" class="logout-side">Déconnexion</button>
+</div>
 
-    <h1>📦 Boxeo — Interface Staff</h1>
-    <p id="staffEmail"></p>
+<div class="content">
 
-    <button class="logout-btn" onclick="logout()">Déconnexion</button>
-    <button class="home-btn" onclick="goHome()">Retour à l’accueil</button>
+    <!-- ========================= -->
+    <!-- SECTION 1 : INFO -->
+    <!-- ========================= -->
+    <section id="section-info">
+        <h1>📦 Boxeo — Interface Staff</h1>
+        <p id="staffEmail"></p>
 
-    <hr>
-
-    <!-- 🔥 ZONE PROMOTION (MASTER ONLY) -->
-    <div id="promotionZone" style="display:none; margin-bottom:30px;">
-        <h2>Gestion du Staff</h2>
-
-        <h3>Promouvoir un utilisateur</h3>
-        <input type="email" id="promoteEmail" placeholder="Email à promouvoir">
-        <button onclick="promoteUser()">Promouvoir</button>
-
-        <h3 style="margin-top:20px;">Retirer un utilisateur du staff</h3>
-        <input type="email" id="removeEmail" placeholder="Email à retirer">
-        <button onclick="removeUser()">Retirer</button>
-    </div>
+        <button class="home-btn" onclick="goHome()">Retour à l’accueil</button>
+    </section>
 
     <hr>
 
-    <!-- FORMULAIRE AJOUT / MODIF -->
-    <h2 id="formTitle">Ajouter un garage</h2>
+    <!-- ========================= -->
+    <!-- SECTION 2 : STAFF -->
+    <!-- ========================= -->
+    <section id="section-staff">
 
-    <form id="garageForm">
-        <input type="hidden" id="garageId">
+        <div id="promotionZone" style="display:none; margin-bottom:30px;">
+            <h2>Gestion du Staff</h2>
 
-        <input type="text" id="name" placeholder="Nom du garage" required>
+            <h3>Promouvoir un utilisateur</h3>
+            <input type="email" id="promoteEmail" placeholder="Email à promouvoir">
+            <button onclick="promoteUser()">Promouvoir</button>
 
-        <input type="text" id="address" placeholder="Adresse" required autocomplete="off">
-        <div id="addressSuggestions" class="suggestions"></div>
+            <h3 style="margin-top:20px;">Retirer un utilisateur du staff</h3>
 
-        <input type="number" id="places" placeholder="Nombre de places" required>
+            <!-- Autocomplétion staff -->
+            <input type="email" id="removeEmail" placeholder="Email à retirer" autocomplete="off">
+            <div id="removeStaffSuggestions" class="suggestions"></div>
 
-        <select id="type">
-            <option value="all">Tous</option>
-            <option value="mensuel">Mensuel</option>
-            <option value="heure">À l’heure</option>
-            <option value="jour">À la journée</option>
-        </select>
+            <button onclick="removeUser()">Retirer</button>
+        </div>
 
-        <button type="submit">Enregistrer</button>
-    </form>
+    </section>
 
     <hr>
 
-    <h2>Garages existants</h2>
+    <!-- ========================= -->
+    <!-- SECTION 3 : FORMULAIRE -->
+    <!-- ========================= -->
+    <section id="section-form">
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Adresse</th>
-                <th>Places</th>
-                <th>Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="garageList"></tbody>
-    </table>
+        <h2 id="formTitle">Ajouter un garage</h2>
+
+        <form id="garageForm">
+            <input type="hidden" id="garageId">
+
+            <input type="text" id="name" placeholder="Nom du garage" required>
+
+            <input type="text" id="address" placeholder="Adresse" required autocomplete="off">
+            <div id="addressSuggestions" class="suggestions"></div>
+
+            <input type="number" id="places" placeholder="Nombre de places" required>
+
+            <select id="type">
+                <option value="all">Tous</option>
+                <option value="mensuel">Mensuel</option>
+                <option value="heure">À l’heure</option>
+                <option value="jour">À la journée</option>
+            </select>
+
+            <button type="submit">Enregistrer</button>
+        </form>
+
+    </section>
+
+    <hr>
+
+    <!-- ========================= -->
+    <!-- SECTION 4 : GARAGES -->
+    <!-- ========================= -->
+    <section id="section-garages">
+
+        <h2>Garages existants</h2>
+
+        <!-- Autocomplétion garages -->
+        <input type="text" id="garageSearchInput" placeholder="Rechercher un garage…" autocomplete="off">
+        <div id="garageSearchSuggestions" class="suggestions"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Places</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="garageList"></tbody>
+        </table>
+
+    </section>
 
 </div>
 

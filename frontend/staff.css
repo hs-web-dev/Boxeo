@@ -1,13 +1,70 @@
+/* ========================= */
+/* GLOBAL */
+/* ========================= */
 body {
+    display: flex;
     background: #0f172a;
     color: white;
     font-family: "Inter", sans-serif;
-    padding: 40px;
+    margin: 0;
 }
 
-.container {
-    max-width: 900px;
-    margin: auto;
+/* ========================= */
+/* SIDEBAR */
+/* ========================= */
+.sidebar {
+    width: 220px;
+    background: #1e293b;
+    height: 100vh;
+    padding: 25px 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    border-right: 2px solid #334155;
+}
+
+.sidebar h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #334155;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.95rem;
+}
+
+.sidebar button:hover {
+    background: #475569;
+}
+
+.logout-side {
+    background: #dc2626 !important;
+}
+
+.logout-side:hover {
+    background: #b91c1c !important;
+}
+
+/* ========================= */
+/* CONTENT */
+/* ========================= */
+.content {
+    margin-left: 240px;
+    padding: 40px;
+    width: calc(100% - 240px);
+}
+
+section {
+    margin-bottom: 60px;
 }
 
 h1 {
@@ -17,14 +74,24 @@ h1 {
 
 h2 {
     margin-top: 30px;
+    font-size: 1.6rem;
 }
 
+h3 {
+    margin-top: 15px;
+}
+
+/* ========================= */
+/* INPUTS & BUTTONS */
+/* ========================= */
 input, select {
     width: 100%;
     padding: 12px;
     margin: 8px 0;
     border-radius: 8px;
     border: none;
+    background: #1e293b;
+    color: white;
 }
 
 button {
@@ -35,6 +102,7 @@ button {
     color: white;
     cursor: pointer;
     margin-top: 10px;
+    transition: 0.2s;
 }
 
 button:hover {
@@ -50,10 +118,16 @@ button:hover {
     margin-left: 10px;
 }
 
+/* ========================= */
+/* TABLE */
+/* ========================= */
 table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 th, td {
@@ -61,10 +135,15 @@ th, td {
     border-bottom: 1px solid #334155;
 }
 
+th {
+    background: #334155;
+}
+
 .action-btn {
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
+    color: white;
 }
 
 .edit-btn {
@@ -75,7 +154,9 @@ th, td {
     background: #dc2626;
 }
 
-/* Suggestions adresse */
+/* ========================= */
+/* SUGGESTIONS */
+/* ========================= */
 .suggestions {
     background: #1e293b;
     border-radius: 8px;
@@ -83,6 +164,7 @@ th, td {
     padding: 5px;
     max-height: 200px;
     overflow-y: auto;
+    border: 1px solid #334155;
 }
 
 .suggestions div {
@@ -93,4 +175,35 @@ th, td {
 
 .suggestions div:hover {
     background: #334155;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+@media (max-width: 900px) {
+    .sidebar {
+        width: 180px;
+    }
+    .content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}
+
+@media (max-width: 700px) {
+    body {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid #334155;
+    }
+    .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
 }
