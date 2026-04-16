@@ -20,7 +20,9 @@
         <a href="index.html" class="active">Accueil</a>
         <a href="garages.html">Garages</a>
         <a href="#">Contact</a>
-        <a id="settingsBtn" onclick="goToSettings()">Paramètres</a>
+
+        <!-- Bouton paramètres corrigé -->
+        <a id="settingsBtn" href="#" onclick="goToSettings()">Paramètres</a>
 
         <span id="userStatus"></span>
 
@@ -37,8 +39,8 @@
     <p>Des places disponibles immédiatement, accessibles 24/7, au mois ou à l’heure.</p>
 
     <div class="search-box fade-up">
-        <input type="text" placeholder="Adresse, quartier…">
-        <select>
+        <input id="searchInput" type="text" placeholder="Adresse, quartier…">
+        <select id="searchType">
             <option value="">Tous les types</option>
             <option value="mensuel">Mensuel</option>
             <option value="heure">À l’heure</option>
