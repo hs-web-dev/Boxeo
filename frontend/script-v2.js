@@ -84,10 +84,8 @@ function submitVerificationCode() {
                     localStorage.setItem("token", loginData.token);
                     closeVerifyPopup();
                     checkLoginStatus();
-                    alert("Email vérifié ✔ Vous êtes maintenant connecté !");
                     window.location.reload(); // 🔥 force la mise à jour du header
                 } else {
-                    alert("Email vérifié ✔ Connectez-vous maintenant.");
                     closeVerifyPopup();
                     openLogin();
                 }
@@ -152,7 +150,6 @@ function login() {
     .then(data => {
         if (data.token) {
             localStorage.setItem("token", data.token);
-            alert("Connexion réussie !");
             closeLogin();
             checkLoginStatus();
             window.location.reload(); // 🔥 pour mettre à jour le header
@@ -167,7 +164,6 @@ function login() {
 // =========================
 function logout() {
     localStorage.removeItem("token");
-    alert("Déconnecté");
     checkLoginStatus();
     window.location.reload();
 }
