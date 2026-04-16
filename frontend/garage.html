@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage</title>
 
+    <link rel="stylesheet" href="garage.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<div class="container">
+    <h1 id="garageName">Chargement...</h1>
+    <p id="garageAddress"></p>
+    <p id="garagePlaces"></p>
+    <p id="garageType"></p>
+
+    <div id="map" class="map"></div>
+
+    <button onclick="goHome()" class="back-btn">Retour à l’accueil</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="garage.js"></script>
+
+</body>
+</html>
