@@ -36,7 +36,7 @@ async function checkStaff() {
 
     if (data.staffMaster === true) {
         document.getElementById("promotionZone").style.display = "block";
-        loadStaffList(); // 🔥 charge la liste staff pour autocomplétion
+        loadStaffList(); // 🔥 indispensable
     }
 }
 
@@ -85,7 +85,7 @@ async function loadGarages() {
     const res = await fetch(`${API_URL}/garages`);
     const garages = await res.json();
 
-    allGarages = garages; // 🔥 pour autocomplétion
+    allGarages = garages;
 
     const list = document.getElementById("garageList");
     list.innerHTML = "";
@@ -241,7 +241,7 @@ removeEmailInput.addEventListener("input", () => {
     const q = removeEmailInput.value.toLowerCase();
     removeStaffSuggestions.innerHTML = "";
 
-    if (q.length < 2) return;
+    if (q.length < 1) return;
 
     const matches = staffList.filter(u =>
         u.email.toLowerCase().includes(q)
