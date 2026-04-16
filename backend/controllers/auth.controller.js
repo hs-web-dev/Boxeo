@@ -56,7 +56,6 @@ export const register = async (req, res) => {
             emailCode: code
         });
 
-        // 🔥 ENVOI EMAIL VIA API HTTP
         await sendVerificationEmail(email, code);
 
         res.json({ needVerification: true });
@@ -123,11 +122,15 @@ export const login = async (req, res) => {
 };
 
 // =========================
-//  ME
+//  ME (CORRIGÉ)
 // =========================
 export const me = async (req, res) => {
     try {
-        const user = await User.findById(req.userId).select("-password");
+        const user = req.user; // 🔥 récupéré depuis le middleware protect
+
+        if (!user) {
+            return res.status(401).json({ message: "Utilisateur non authentifié" });
+        }
 
         const isMaster = user.email === process.env.STAFF_MASTER_EMAIL;
 
@@ -191,7 +194,7 @@ export const removeStaff = async (req, res) => {
 // =========================
 export const deleteAccount = async (req, res) => {
     try {
-        await User.deleteOne({ _id: req.userId });
+        await User.deleteOne({ _id: req.user._id });
         res.json({ message: "Compte supprimé avec succès" });
     } catch (err) {
         console.log("Erreur DELETE ACCOUNT :", err);
