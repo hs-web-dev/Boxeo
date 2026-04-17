@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -16,11 +16,72 @@ h1 {
     margin-bottom: 10px;
 }
 
-.map {
+.garage-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.images-section {
+    display: flex;
+    gap: 15px;
+}
+
+.main-image {
+    width: 350px;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #1e293b;
+}
+
+.small-images {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.small-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    background: #1e293b;
+}
+
+.small-img:hover {
+    transform: scale(1.05);
+}
+
+.info-section {
+    display: flex;
+    align-items: flex-start;
+}
+
+.reserve-btn {
+    padding: 12px 25px;
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.garage-map {
+    width: 100%;
     height: 300px;
-    margin-top: 20px;
-    border-radius: 12px;
+    margin-top: 40px;
+    border-radius: 10px;
     overflow: hidden;
+}
+
+.garage-description {
+    margin-top: 20px;
+    font-size: 18px;
+    line-height: 1.5;
 }
 
 .back-btn {

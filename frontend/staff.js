@@ -1,18 +1,14 @@
 const API_URL = "https://boxeo-p8t4.onrender.com/api";
 const token = localStorage.getItem("token");
 
-// =========================
-//  SCROLL SMOOTH POUR SIDEBAR
-// =========================
+// SCROLL SMOOTH
 function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({
         behavior: "smooth"
     });
 }
 
-// =========================
-//  PROTECTION STAFF
-// =========================
+// PROTECTION STAFF
 async function checkStaff() {
     if (!token) {
         alert("Accès refusé");
@@ -36,15 +32,13 @@ async function checkStaff() {
 
     if (data.staffMaster === true) {
         document.getElementById("promotionZone").style.display = "block";
-        loadStaffList(); // 🔥 indispensable
+        loadStaffList();
     }
 }
 
 checkStaff();
 
-// =========================
-//  AUTO-COMPLÉTION ADRESSE
-// =========================
+// AUTO-COMPLÉTION ADRESSE
 const addressInput = document.getElementById("address");
 const suggestionsBox = document.getElementById("addressSuggestions");
 
@@ -76,9 +70,7 @@ addressInput.addEventListener("input", async () => {
     });
 });
 
-// =========================
-//  CHARGER LES GARAGES
-// =========================
+// CHARGER LES GARAGES
 let allGarages = [];
 
 async function loadGarages() {
@@ -110,9 +102,7 @@ async function loadGarages() {
 
 loadGarages();
 
-// =========================
-//  AUTOCOMPLÉTION GARAGES
-// =========================
+// AUTOCOMPLÉTION GARAGES
 const garageSearchInput = document.getElementById("garageSearchInput");
 const garageSearchSuggestions = document.getElementById("garageSearchSuggestions");
 
@@ -138,9 +128,7 @@ garageSearchInput.addEventListener("input", () => {
     });
 });
 
-// =========================
-//  AJOUT / MODIFICATION
-// =========================
+// AJOUT / MODIFICATION
 document.getElementById("garageForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -150,7 +138,22 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     const places = parseInt(document.getElementById("places").value);
     const type = document.getElementById("type").value;
 
-    const body = { name, address, places, type };
+    const dimensions = document.getElementById("dimensions").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const photos = document.getElementById("photos").value
+        .split(",")
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+
+    const body = { 
+        name, 
+        address, 
+        places, 
+        type,
+        dimensions,
+        description,
+        photos
+    };
 
     const method = id ? "PUT" : "POST";
     const url = id ? `${API_URL}/garages/${id}` : `${API_URL}/garages`;
@@ -170,9 +173,7 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     document.getElementById("formTitle").innerText = "Ajouter un garage";
 });
 
-// =========================
-//  CHARGER UN GARAGE POUR MODIF
-// =========================
+// CHARGER UN GARAGE POUR MODIF
 async function editGarage(id) {
     const res = await fetch(`${API_URL}/garages/${id}`);
     const g = await res.json();
@@ -183,12 +184,14 @@ async function editGarage(id) {
     document.getElementById("places").value = g.places;
     document.getElementById("type").value = g.type;
 
+    document.getElementById("dimensions").value = g.dimensions || "";
+    document.getElementById("description").value = g.description || "";
+    document.getElementById("photos").value = g.photos ? g.photos.join(", ") : "";
+
     document.getElementById("formTitle").innerText = "Modifier un garage";
 }
 
-// =========================
-//  SUPPRESSION
-// =========================
+// SUPPRESSION
 async function deleteGarage(id) {
     if (!confirm("Supprimer ce garage ?")) return;
 
@@ -201,9 +204,7 @@ async function deleteGarage(id) {
     loadGarages();
 }
 
-// =========================
-//  PROMOUVOIR UN UTILISATEUR
-// =========================
+// PROMOUVOIR UN UTILISATEUR
 async function promoteUser() {
     const email = document.getElementById("promoteEmail").value.trim();
     if (!email) return alert("Entrez un email");
@@ -221,9 +222,7 @@ async function promoteUser() {
     alert(data.message);
 }
 
-// =========================
-//  AUTOCOMPLÉTION STAFF
-// =========================
+// AUTOCOMPLÉTION STAFF
 let staffList = [];
 
 async function loadStaffList() {
@@ -258,9 +257,7 @@ removeEmailInput.addEventListener("input", () => {
     });
 });
 
-// =========================
-//  RETIRER UN UTILISATEUR DU STAFF
-// =========================
+// RETIRER UN UTILISATEUR DU STAFF
 async function removeUser() {
     const email = removeEmailInput.value.trim();
     if (!email) return alert("Entrez un email");
@@ -278,16 +275,12 @@ async function removeUser() {
     alert(data.message);
 }
 
-// =========================
-//  RETOUR ACCUEIL
-// =========================
+// RETOUR ACCUEIL
 function goHome() {
     window.location.href = "index.html";
 }
 
-// =========================
-//  LOGOUT
-// =========================
+// LOGOUT
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "index.html";

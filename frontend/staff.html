@@ -19,9 +19,7 @@
 
 <div class="content">
 
-    <!-- ========================= -->
     <!-- SECTION 1 : INFO -->
-    <!-- ========================= -->
     <section id="section-info">
         <h1>📦 Boxeo — Interface Staff</h1>
         <p id="staffEmail"></p>
@@ -31,9 +29,7 @@
 
     <hr>
 
-    <!-- ========================= -->
     <!-- SECTION 2 : STAFF -->
-    <!-- ========================= -->
     <section id="section-staff">
 
         <div id="promotionZone" style="display:none; margin-bottom:30px;">
@@ -45,7 +41,6 @@
 
             <h3 style="margin-top:20px;">Retirer un utilisateur du staff</h3>
 
-            <!-- Autocomplétion staff -->
             <input type="email" id="removeEmail" placeholder="Email à retirer" autocomplete="off">
             <div id="removeStaffSuggestions" class="suggestions"></div>
 
@@ -56,9 +51,7 @@
 
     <hr>
 
-    <!-- ========================= -->
     <!-- SECTION 3 : FORMULAIRE -->
-    <!-- ========================= -->
     <section id="section-form">
 
         <h2 id="formTitle">Ajouter un garage</h2>
@@ -80,6 +73,12 @@
                 <option value="jour">À la journée</option>
             </select>
 
+            <input type="text" id="dimensions" placeholder="Dimensions (ex: 2.5m x 5m)">
+
+            <textarea id="description" placeholder="Description du garage"></textarea>
+
+            <input type="text" id="photos" placeholder="Photos (URLs séparées par des virgules)">
+
             <button type="submit">Enregistrer</button>
         </form>
 
@@ -87,14 +86,11 @@
 
     <hr>
 
-    <!-- ========================= -->
     <!-- SECTION 4 : GARAGES -->
-    <!-- ========================= -->
     <section id="section-garages">
 
         <h2>Garages existants</h2>
 
-        <!-- Autocomplétion garages -->
         <input type="text" id="garageSearchInput" placeholder="Rechercher un garage…" autocomplete="off">
         <div id="garageSearchSuggestions" class="suggestions"></div>
 
