@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // === UPLOAD ROUTE ===
-router.post("/upload", upload.array("photos", 5), (req, res) => {
+router.post("/upload", upload.array("photos", 10), (req, res) => {
     const urls = req.files.map(f => `${req.protocol}://${req.get("host")}/uploads/${f.filename}`);
     res.json({ urls });
 });
