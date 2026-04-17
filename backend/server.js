@@ -27,7 +27,10 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 🔥 Routes API
+// === SERVE UPLOADS ===
+app.use("/uploads", express.static("uploads"));
+
+// === ROUTES API ===
 app.use("/api/auth", authRoutes);
 app.use("/api/garages", garageRoutes);
 app.use("/api/staff", staffRoutes);
