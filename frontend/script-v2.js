@@ -70,7 +70,6 @@ function submitVerificationCode() {
 
         if (data.success) {
 
-            // 🔥 Connexion automatique après vérification
             const password = document.getElementById("password").value;
 
             fetch(`${API_URL}/auth/login`, {
@@ -84,7 +83,7 @@ function submitVerificationCode() {
                     localStorage.setItem("token", loginData.token);
                     closeVerifyPopup();
                     checkLoginStatus();
-                    window.location.reload(); // 🔥 force la mise à jour du header
+                    window.location.reload();
                 } else {
                     closeVerifyPopup();
                     openLogin();
@@ -152,7 +151,7 @@ function login() {
             localStorage.setItem("token", data.token);
             closeLogin();
             checkLoginStatus();
-            window.location.reload(); // 🔥 pour mettre à jour le header
+            window.location.reload();
         } else {
             alert(data.message);
         }
@@ -397,10 +396,9 @@ if (document.getElementById("map") && typeof L !== "undefined") {
                     `<b>${g.name ?? "Garage"}</b><br>${g.address ?? ""}`
                 );
 
+                // 🔥 VERSION DEMANDÉE : ouvre uniquement garage.html
                 marker.on("click", () => {
-                    if (g._id) {
-                        window.location.href = `garage.html?id=${g._id}`;
-                    }
+                    window.location.href = "garage.html";
                 });
 
                 marker.addTo(garagesLayer);
