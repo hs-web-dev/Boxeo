@@ -48,7 +48,7 @@ function closeVerifyPopup() {
 }
 
 // =========================
-//  SUBMIT VERIFICATION CODE (AUTO LOGIN + RELOAD)
+//  SUBMIT VERIFICATION CODE
 // =========================
 function submitVerificationCode() {
     const boxes = document.querySelectorAll(".code-box");
@@ -396,9 +396,9 @@ if (document.getElementById("map") && typeof L !== "undefined") {
                     `<b>${g.name ?? "Garage"}</b><br>${g.address ?? ""}`
                 );
 
-                // 🔥 VERSION DEMANDÉE : ouvre uniquement garage.html
+                // 🔥 VERSION FINALE : redirection dynamique avec ID
                 marker.on("click", () => {
-                    window.location.href = "garage.html";
+                    window.location.href = `garage.html?id=${g._id}`;
                 });
 
                 marker.addTo(garagesLayer);
