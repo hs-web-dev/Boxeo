@@ -3,34 +3,26 @@ const token = localStorage.getItem("token");
 
 // SCROLL SMOOTH
 function scrollToSection(id) {
-    document.getElementById(id).scrollIntoView({
-        behavior: "smooth"
-    });
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
 }
 
 // PROTECTION STAFF
 async function checkStaff() {
-    if (!token) {
-        alert("Accès refusé");
-        window.location.href = "index.html";
-        return;
-    }
+    if (!token) return (window.location.href = "index.html");
 
     const res = await fetch(`${API_URL}/auth/me`, {
-        headers: { "Authorization": "Bearer " + token }
+        headers: { Authorization: "Bearer " + token }
     });
 
     const data = await res.json();
 
-    if (!data.email || !(data.role === "staff" || data.staffMaster === true)) {
-        alert("Accès refusé");
-        window.location.href = "index.html";
-        return;
+    if (!data.email || !(data.role === "staff" || data.staffMaster)) {
+        return (window.location.href = "index.html");
     }
 
-    document.getElementById("staffEmail").innerHTML = "Connecté : " + data.email;
+    document.getElementById("staffEmail").innerText = "Connecté : " + data.email;
 
-    if (data.staffMaster === true) {
+    if (data.staffMaster) {
         document.getElementById("promotionZone").style.display = "block";
         loadStaffList();
     }
@@ -44,28 +36,25 @@ const suggestionsBox = document.getElementById("addressSuggestions");
 
 addressInput.addEventListener("input", async () => {
     const query = addressInput.value.trim();
-    if (query.length < 3) {
-        suggestionsBox.innerHTML = "";
-        return;
-    }
+    if (query.length < 3) return (suggestionsBox.innerHTML = "");
 
     const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`,
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            query
+        )}&format=json&addressdetails=1&limit=5`,
         { headers: { "User-Agent": "Boxeo-App" } }
     );
 
     const results = await res.json();
     suggestionsBox.innerHTML = "";
 
-    results.forEach(r => {
+    results.forEach((r) => {
         const div = document.createElement("div");
         div.innerText = r.display_name;
-
         div.onclick = () => {
             addressInput.value = r.display_name;
             suggestionsBox.innerHTML = "";
         };
-
         suggestionsBox.appendChild(div);
     });
 });
@@ -75,14 +64,12 @@ let allGarages = [];
 
 async function loadGarages() {
     const res = await fetch(`${API_URL}/garages`);
-    const garages = await res.json();
-
-    allGarages = garages;
+    allGarages = await res.json();
 
     const list = document.getElementById("garageList");
     list.innerHTML = "";
 
-    garages.forEach(g => {
+    allGarages.forEach((g) => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -91,8 +78,8 @@ async function loadGarages() {
             <td>${g.places}</td>
             <td>${g.type}</td>
             <td>
-                <button class="action-btn edit-btn" onclick="editGarage('${g._id}')">Modifier</button>
-                <button class="action-btn delete-btn" onclick="deleteGarage('${g._id}')">Supprimer</button>
+                <button onclick="editGarage('${g._id}')">Modifier</button>
+                <button onclick="deleteGarage('${g._id}')">Supprimer</button>
             </td>
         `;
 
@@ -101,32 +88,6 @@ async function loadGarages() {
 }
 
 loadGarages();
-
-// AUTOCOMPLÉTION GARAGES
-const garageSearchInput = document.getElementById("garageSearchInput");
-const garageSearchSuggestions = document.getElementById("garageSearchSuggestions");
-
-garageSearchInput.addEventListener("input", () => {
-    const q = garageSearchInput.value.toLowerCase();
-    garageSearchSuggestions.innerHTML = "";
-
-    if (q.length < 2) return;
-
-    const matches = allGarages.filter(g =>
-        g.name.toLowerCase().includes(q) ||
-        g.address.toLowerCase().includes(q)
-    );
-
-    matches.forEach(g => {
-        const div = document.createElement("div");
-        div.innerHTML = `<b>${g.name}</b><br>${g.address}`;
-        div.onclick = () => {
-            editGarage(g._id);
-            garageSearchSuggestions.innerHTML = "";
-        };
-        garageSearchSuggestions.appendChild(div);
-    });
-});
 
 // AJOUT / MODIFICATION
 document.getElementById("garageForm").addEventListener("submit", async (e) => {
@@ -137,18 +98,33 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     const address = document.getElementById("address").value;
     const places = parseInt(document.getElementById("places").value);
     const type = document.getElementById("type").value;
+    const dimensions = document.getElementById("dimensions").value;
+    const description = document.getElementById("description").value;
 
-    const dimensions = document.getElementById("dimensions").value.trim();
-    const description = document.getElementById("description").value.trim();
-    const photos = document.getElementById("photos").value
-        .split(",")
-        .map(p => p.trim())
-        .filter(p => p.length > 0);
+    // === UPLOAD IMAGES ===
+    const uploadInput = document.getElementById("photoUpload");
+    let photos = [];
 
-    const body = { 
-        name, 
-        address, 
-        places, 
+    if (uploadInput.files.length > 0) {
+        const formData = new FormData();
+        for (let file of uploadInput.files) {
+            formData.append("photos", file);
+        }
+
+        const uploadRes = await fetch(`${API_URL}/garages/upload`, {
+            method: "POST",
+            headers: { Authorization: "Bearer " + token },
+            body: formData
+        });
+
+        const uploadData = await uploadRes.json();
+        photos = uploadData.urls;
+    }
+
+    const body = {
+        name,
+        address,
+        places,
         type,
         dimensions,
         description,
@@ -162,7 +138,7 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
         method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         },
         body: JSON.stringify(body)
     });
@@ -183,11 +159,10 @@ async function editGarage(id) {
     document.getElementById("address").value = g.address;
     document.getElementById("places").value = g.places;
     document.getElementById("type").value = g.type;
+    document.getElementById("dimensions").value = g.dimensions;
+    document.getElementById("description").value = g.description;
 
-    document.getElementById("dimensions").value = g.dimensions || "";
-    document.getElementById("description").value = g.description || "";
-    document.getElementById("photos").value = g.photos ? g.photos.join(", ") : "";
-
+    document.getElementById("photoUpload").value = "";
     document.getElementById("formTitle").innerText = "Modifier un garage";
 }
 
@@ -197,14 +172,14 @@ async function deleteGarage(id) {
 
     await fetch(`${API_URL}/garages/${id}`, {
         method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
+        headers: { Authorization: "Bearer " + token }
     });
 
     alert("Garage supprimé !");
     loadGarages();
 }
 
-// PROMOUVOIR UN UTILISATEUR
+// STAFF
 async function promoteUser() {
     const email = document.getElementById("promoteEmail").value.trim();
     if (!email) return alert("Entrez un email");
@@ -213,7 +188,7 @@ async function promoteUser() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         },
         body: JSON.stringify({ email })
     });
@@ -222,12 +197,11 @@ async function promoteUser() {
     alert(data.message);
 }
 
-// AUTOCOMPLÉTION STAFF
 let staffList = [];
 
 async function loadStaffList() {
     const res = await fetch(`${API_URL}/staff/list`, {
-        headers: { "Authorization": "Bearer " + token }
+        headers: { Authorization: "Bearer " + token }
     });
 
     staffList = await res.json();
@@ -240,13 +214,11 @@ removeEmailInput.addEventListener("input", () => {
     const q = removeEmailInput.value.toLowerCase();
     removeStaffSuggestions.innerHTML = "";
 
-    if (q.length < 1) return;
-
-    const matches = staffList.filter(u =>
+    const matches = staffList.filter((u) =>
         u.email.toLowerCase().includes(q)
     );
 
-    matches.forEach(u => {
+    matches.forEach((u) => {
         const div = document.createElement("div");
         div.innerText = u.email;
         div.onclick = () => {
@@ -257,7 +229,6 @@ removeEmailInput.addEventListener("input", () => {
     });
 });
 
-// RETIRER UN UTILISATEUR DU STAFF
 async function removeUser() {
     const email = removeEmailInput.value.trim();
     if (!email) return alert("Entrez un email");
@@ -266,7 +237,7 @@ async function removeUser() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         },
         body: JSON.stringify({ email })
     });
@@ -275,12 +246,10 @@ async function removeUser() {
     alert(data.message);
 }
 
-// RETOUR ACCUEIL
 function goHome() {
     window.location.href = "index.html";
 }
 
-// LOGOUT
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "index.html";

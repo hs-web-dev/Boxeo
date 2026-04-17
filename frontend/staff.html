@@ -19,19 +19,15 @@
 
 <div class="content">
 
-    <!-- SECTION 1 : INFO -->
     <section id="section-info">
         <h1>📦 Boxeo — Interface Staff</h1>
         <p id="staffEmail"></p>
-
         <button class="home-btn" onclick="goHome()">Retour à l’accueil</button>
     </section>
 
     <hr>
 
-    <!-- SECTION 2 : STAFF -->
     <section id="section-staff">
-
         <div id="promotionZone" style="display:none; margin-bottom:30px;">
             <h2>Gestion du Staff</h2>
 
@@ -40,20 +36,15 @@
             <button onclick="promoteUser()">Promouvoir</button>
 
             <h3 style="margin-top:20px;">Retirer un utilisateur du staff</h3>
-
             <input type="email" id="removeEmail" placeholder="Email à retirer" autocomplete="off">
             <div id="removeStaffSuggestions" class="suggestions"></div>
-
             <button onclick="removeUser()">Retirer</button>
         </div>
-
     </section>
 
     <hr>
 
-    <!-- SECTION 3 : FORMULAIRE -->
     <section id="section-form">
-
         <h2 id="formTitle">Ajouter un garage</h2>
 
         <form id="garageForm">
@@ -74,21 +65,18 @@
             </select>
 
             <input type="text" id="dimensions" placeholder="Dimensions (ex: 2.5m x 5m)">
-
             <textarea id="description" placeholder="Description du garage"></textarea>
 
-            <input type="text" id="photos" placeholder="Photos (URLs séparées par des virgules)">
+            <label>Photos du garage</label>
+            <input type="file" id="photoUpload" multiple accept="image/*">
 
             <button type="submit">Enregistrer</button>
         </form>
-
     </section>
 
     <hr>
 
-    <!-- SECTION 4 : GARAGES -->
     <section id="section-garages">
-
         <h2>Garages existants</h2>
 
         <input type="text" id="garageSearchInput" placeholder="Rechercher un garage…" autocomplete="off">
@@ -106,7 +94,6 @@
             </thead>
             <tbody id="garageList"></tbody>
         </table>
-
     </section>
 
 </div>
