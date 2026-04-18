@@ -10,26 +10,29 @@
 </head>
 <body>
 
-<div class="container">
-    <h1 id="garageName">Chargement...</h1>
+<!-- BACKGROUND SHAPES -->
+<div class="bg-shape bg1"></div>
+<div class="bg-shape bg2"></div>
+
+<div class="garage-container">
+
+    <h1 id="garageName"></h1>
     <p id="garageAddress"></p>
     <p id="garagePlaces"></p>
     <p id="garageType"></p>
     <p id="garageDimensions"></p>
 
-    <div class="garage-container">
+    <div class="content-row">
 
-        <div class="images-section">
+        <!-- IMAGES -->
+        <div class="images-block">
             <img id="mainImage" class="main-image" src="" alt="Garage">
 
-            <div class="small-images">
-                <img class="small-img" id="img1" src="" alt="">
-                <img class="small-img" id="img2" src="" alt="">
-                <img class="small-img" id="img3" src="" alt="">
-            </div>
+            <div id="thumbContainer" class="thumbs"></div>
         </div>
 
-        <div class="info-section">
+        <!-- RESERVE BUTTON -->
+        <div class="reserve-block">
             <button id="reserveBtn" class="reserve-btn">Réserver</button>
         </div>
 
