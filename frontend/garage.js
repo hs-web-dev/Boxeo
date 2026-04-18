@@ -47,24 +47,13 @@ async function loadGarage() {
             });
         }
 
-        // FULLSCREEN
-        const fullscreen = document.getElementById("fullscreenViewer");
-        const fullscreenImg = document.getElementById("fullscreenImage");
-
-        mainImage.onclick = () => {
-            fullscreenImg.src = mainImage.src;
-            fullscreen.classList.remove("hidden");
-        };
-
-        document.getElementById("closeFullscreen").onclick = () => {
-            fullscreen.classList.add("hidden");
-        };
-
         // SLIDER AUTO
-        sliderInterval = setInterval(() => {
-            sliderIndex = (sliderIndex + 1) % photos.length;
-            mainImage.src = photos[sliderIndex];
-        }, 3500);
+        if (photos.length > 1) {
+            sliderInterval = setInterval(() => {
+                sliderIndex = (sliderIndex + 1) % photos.length;
+                mainImage.src = photos[sliderIndex];
+            }, 3500);
+        }
 
         // MAP
         const map = L.map("map").setView([g.lat, g.lng], 16);
