@@ -80,6 +80,9 @@ addressInput.addEventListener("input", async () => {
 const uploadInput = document.getElementById("photoUpload");
 const previewContainer = document.getElementById("previewContainer");
 
+// stocke les photos déjà enregistrées du garage en cours d’édition
+let currentPhotos = [];
+
 uploadInput.addEventListener("change", () => {
     previewContainer.innerHTML = "";
 
@@ -165,9 +168,9 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     const dimensions = document.getElementById("dimensions").value.trim();
     const description = document.getElementById("description").value.trim();
 
-    // ===== UPLOAD DES PHOTOS =====
     let photos = [];
 
+    // 1) si on a choisi de nouveaux fichiers → on upload
     if (uploadInput.files.length > 0) {
         const formData = new FormData();
 
@@ -183,6 +186,11 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
 
         const uploadData = await uploadRes.json();
         photos = uploadData.urls || [];
+    } else {
+        // 2) si on est en mode édition et qu’on n’a pas re‑uploadé → garder les anciennes photos
+        if (id && currentPhotos && currentPhotos.length > 0) {
+            photos = currentPhotos;
+        }
     }
 
     const body = {
@@ -211,6 +219,7 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     loadGarages();
     document.getElementById("garageForm").reset();
     previewContainer.innerHTML = "";
+    currentPhotos = [];
     document.getElementById("formTitle").innerText = "Ajouter un garage";
 });
 
@@ -229,6 +238,10 @@ async function editGarage(id) {
     document.getElementById("dimensions").value = g.dimensions || "";
     document.getElementById("description").value = g.description || "";
 
+    // on mémorise les photos existantes pour les conserver si pas de nouvel upload
+    currentPhotos = Array.isArray(g.photos) ? g.photos : [];
+
+    // on vide l’input file et la preview (on ne peut pas pré-remplir un input file)
     uploadInput.value = "";
     previewContainer.innerHTML = "";
 
