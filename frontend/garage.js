@@ -18,20 +18,31 @@ async function loadGarage() {
         document.getElementById("garagePlaces").innerText = "Places : " + g.places;
         document.getElementById("garageType").innerText = "Type : " + g.type;
         document.getElementById("garageDimensions").innerText = g.dimensions ? "Dimensions : " + g.dimensions : "";
+        document.getElementById("garageDescription").innerText = g.description || "";
 
         const mainImage = document.getElementById("mainImage");
         const img1 = document.getElementById("img1");
         const img2 = document.getElementById("img2");
+        const img3 = document.getElementById("img3");
 
+        // ============================
+        //     AFFICHAGE DES PHOTOS
+        // ============================
         if (g.photos && g.photos.length > 0) {
-            mainImage.src = g.photos[0] || "";
-            img1.src = g.photos[1] || g.photos[0] || "";
-            img2.src = g.photos[2] || g.photos[0] || "";
+            mainImage.src = g.photos[0];
+
+            img1.src = g.photos[1] || g.photos[0];
+            img2.src = g.photos[2] || g.photos[0];
+            img3.src = g.photos[3] || g.photos[0];
         }
 
-        img1.onclick = () => { if (img1.src) mainImage.src = img1.src; };
-        img2.onclick = () => { if (img2.src) mainImage.src = img2.src; };
+        img1.onclick = () => mainImage.src = img1.src;
+        img2.onclick = () => mainImage.src = img2.src;
+        img3.onclick = () => mainImage.src = img3.src;
 
+        // ============================
+        //     CARTE LEAFLET
+        // ============================
         const map = L.map("map").setView([g.lat, g.lng], 16);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -40,8 +51,7 @@ async function loadGarage() {
 
         L.marker([g.lat, g.lng]).addTo(map);
 
-        const reserveBtn = document.getElementById("reserveBtn");
-        reserveBtn.onclick = () => {
+        document.getElementById("reserveBtn").onclick = () => {
             alert("Système de réservation à venir.");
         };
 

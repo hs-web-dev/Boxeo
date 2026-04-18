@@ -54,9 +54,7 @@ addressInput.addEventListener("input", async () => {
     }
 
     const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-            query
-        )}&format=json&addressdetails=1&limit=5`,
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`,
         { headers: { "User-Agent": "Boxeo-App" } }
     );
 
@@ -80,7 +78,7 @@ addressInput.addEventListener("input", async () => {
 const uploadInput = document.getElementById("photoUpload");
 const previewContainer = document.getElementById("previewContainer");
 
-// stocke les photos déjà enregistrées du garage en cours d’édition
+// 🔥 Stocke les photos existantes du garage en modification
 let currentPhotos = [];
 
 uploadInput.addEventListener("change", () => {
@@ -170,7 +168,7 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
 
     let photos = [];
 
-    // 1) si on a choisi de nouveaux fichiers → on upload
+    // 🔥 1) Nouveaux fichiers → upload
     if (uploadInput.files.length > 0) {
         const formData = new FormData();
 
@@ -186,11 +184,11 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
 
         const uploadData = await uploadRes.json();
         photos = uploadData.urls || [];
-    } else {
-        // 2) si on est en mode édition et qu’on n’a pas re‑uploadé → garder les anciennes photos
-        if (id && currentPhotos && currentPhotos.length > 0) {
-            photos = currentPhotos;
-        }
+    }
+
+    // 🔥 2) Mode édition sans nouvel upload → garder les anciennes photos
+    else if (id && currentPhotos.length > 0) {
+        photos = currentPhotos;
     }
 
     const body = {
@@ -238,10 +236,9 @@ async function editGarage(id) {
     document.getElementById("dimensions").value = g.dimensions || "";
     document.getElementById("description").value = g.description || "";
 
-    // on mémorise les photos existantes pour les conserver si pas de nouvel upload
+    // 🔥 On mémorise les photos existantes
     currentPhotos = Array.isArray(g.photos) ? g.photos : [];
 
-    // on vide l’input file et la preview (on ne peut pas pré-remplir un input file)
     uploadInput.value = "";
     previewContainer.innerHTML = "";
 
