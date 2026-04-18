@@ -3,9 +3,6 @@ const API_URL = "https://boxeo-p8t4.onrender.com/api";
 const params = new URLSearchParams(window.location.search);
 const garageId = params.get("id");
 
-let sliderIndex = 0;
-let sliderInterval;
-
 async function loadGarage() {
     try {
         const res = await fetch(`${API_URL}/garages/${garageId}`);
@@ -45,14 +42,6 @@ async function loadGarage() {
 
                 thumbContainer.appendChild(img);
             });
-        }
-
-        // SLIDER AUTO
-        if (photos.length > 1) {
-            sliderInterval = setInterval(() => {
-                sliderIndex = (sliderIndex + 1) % photos.length;
-                mainImage.src = photos[sliderIndex];
-            }, 3500);
         }
 
         // MAP
