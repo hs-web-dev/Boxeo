@@ -27,16 +27,22 @@
 
     <div class="garage-content">
 
-        <!-- IMAGES -->
+        <!-- IMAGE GALLERY -->
         <div class="gallery">
-            <img id="mainImage" class="main-image" src="" alt="Garage">
+            <div class="slider">
+                <img id="mainImage" class="main-image" src="" alt="Garage">
+            </div>
 
             <div id="thumbContainer" class="thumbs"></div>
         </div>
 
-        <!-- RESERVE BUTTON -->
+        <!-- RESERVE ZONE -->
         <div class="reserve-zone">
+            <p class="reserve-top-text">Besoin d’une place ?</p>
+
             <button id="reserveBtn" class="reserve-btn">Réserver</button>
+
+            <p class="reserve-bottom-text">Réservation instantanée</p>
         </div>
 
     </div>
@@ -47,6 +53,12 @@
 
     <button onclick="goHome()" class="back-btn">Retour à l’accueil</button>
 
+</div>
+
+<!-- FULLSCREEN VIEWER -->
+<div id="fullscreenViewer" class="fullscreen hidden">
+    <span id="closeFullscreen" class="close-fullscreen">×</span>
+    <img id="fullscreenImage" class="fullscreen-img" src="">
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

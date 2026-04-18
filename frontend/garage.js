@@ -3,6 +3,9 @@ const API_URL = "https://boxeo-p8t4.onrender.com/api";
 const params = new URLSearchParams(window.location.search);
 const garageId = params.get("id");
 
+let sliderIndex = 0;
+let sliderInterval;
+
 async function loadGarage() {
     try {
         const res = await fetch(`${API_URL}/garages/${garageId}`);
@@ -23,13 +26,12 @@ async function loadGarage() {
         const mainImage = document.getElementById("mainImage");
         const thumbContainer = document.getElementById("thumbContainer");
 
-        // ============================
-        //     AFFICHAGE DYNAMIQUE
-        // ============================
-        if (g.photos && g.photos.length > 0) {
-            mainImage.src = g.photos[0];
+        let photos = g.photos || [];
 
-            g.photos.forEach((url, index) => {
+        if (photos.length > 0) {
+            mainImage.src = photos[0];
+
+            photos.forEach((url, index) => {
                 if (index === 0) return;
 
                 const img = document.createElement("img");
@@ -45,9 +47,26 @@ async function loadGarage() {
             });
         }
 
-        // ============================
-        //     CARTE LEAFLET
-        // ============================
+        // FULLSCREEN
+        const fullscreen = document.getElementById("fullscreenViewer");
+        const fullscreenImg = document.getElementById("fullscreenImage");
+
+        mainImage.onclick = () => {
+            fullscreenImg.src = mainImage.src;
+            fullscreen.classList.remove("hidden");
+        };
+
+        document.getElementById("closeFullscreen").onclick = () => {
+            fullscreen.classList.add("hidden");
+        };
+
+        // SLIDER AUTO
+        sliderInterval = setInterval(() => {
+            sliderIndex = (sliderIndex + 1) % photos.length;
+            mainImage.src = photos[sliderIndex];
+        }, 3500);
+
+        // MAP
         const map = L.map("map").setView([g.lat, g.lng], 16);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
