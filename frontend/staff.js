@@ -75,6 +75,22 @@ addressInput.addEventListener("input", async () => {
 });
 
 // =========================
+//  PRÉVISUALISATION DES IMAGES
+// =========================
+const uploadInput = document.getElementById("photoUpload");
+const previewContainer = document.getElementById("previewContainer");
+
+uploadInput.addEventListener("change", () => {
+    previewContainer.innerHTML = "";
+
+    for (let file of uploadInput.files) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        previewContainer.appendChild(img);
+    }
+});
+
+// =========================
 //  CHARGER LES GARAGES
 // =========================
 let allGarages = [];
@@ -150,11 +166,11 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     const description = document.getElementById("description").value.trim();
 
     // ===== UPLOAD DES PHOTOS =====
-    const uploadInput = document.getElementById("photoUpload");
     let photos = [];
 
     if (uploadInput.files.length > 0) {
         const formData = new FormData();
+
         for (let file of uploadInput.files) {
             formData.append("photos", file);
         }
@@ -194,6 +210,7 @@ document.getElementById("garageForm").addEventListener("submit", async (e) => {
     alert("Garage enregistré !");
     loadGarages();
     document.getElementById("garageForm").reset();
+    previewContainer.innerHTML = "";
     document.getElementById("formTitle").innerText = "Ajouter un garage";
 });
 
@@ -212,8 +229,8 @@ async function editGarage(id) {
     document.getElementById("dimensions").value = g.dimensions || "";
     document.getElementById("description").value = g.description || "";
 
-    // on ne recharge pas les anciennes photos dans l'input file
-    document.getElementById("photoUpload").value = "";
+    uploadInput.value = "";
+    previewContainer.innerHTML = "";
 
     document.getElementById("formTitle").innerText = "Modifier un garage";
 }
