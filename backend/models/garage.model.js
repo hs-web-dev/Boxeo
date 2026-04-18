@@ -1,3 +1,4 @@
+// models/garage.model.js
 import mongoose from "mongoose";
 
 const garageSchema = new mongoose.Schema({

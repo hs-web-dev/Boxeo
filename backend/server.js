@@ -1,3 +1,4 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -27,10 +28,9 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// === SERVE UPLOADS ===
+// (optionnel) si tu gardes encore des fichiers locaux
 app.use("/uploads", express.static("uploads"));
 
-// === ROUTES API ===
 app.use("/api/auth", authRoutes);
 app.use("/api/garages", garageRoutes);
 app.use("/api/staff", staffRoutes);

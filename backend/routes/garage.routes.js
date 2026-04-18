@@ -1,5 +1,7 @@
+// routes/garage.routes.js
 import express from "express";
 import multer from "multer";
+import cloudinary from "../config/cloudinary.js";
 
 import {
     createGarage,
@@ -11,20 +13,38 @@ import {
 
 const router = express.Router();
 
-// === MULTER CONFIG ===
-const storage = multer.diskStorage({
-    destination: "uploads/",
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
+// === MULTER EN MÉMOIRE (pour Cloudinary) ===
+const upload = multer({ storage: multer.memoryStorage() });
+
+// === UPLOAD VERS CLOUDINARY ===
+router.post("/upload", upload.array("photos"), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.json({ urls: [] });
+        }
+
+        const uploads = await Promise.all(
+            req.files.map(
+                (file) =>
+                    new Promise((resolve, reject) => {
+                        cloudinary.uploader
+                            .upload_stream(
+                                { folder: "boxeo_garages" },
+                                (error, result) => {
+                                    if (error) return reject(error);
+                                    resolve(result.secure_url);
+                                }
+                            )
+                            .end(file.buffer);
+                    })
+            )
+        );
+
+        res.json({ urls: uploads });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erreur upload Cloudinary" });
     }
-});
-
-const upload = multer({ storage });
-
-// === UPLOAD ROUTE ===
-router.post("/upload", upload.array("photos"), (req, res) => {
-    const urls = req.files.map(f => `${req.protocol}://${req.get("host")}/uploads/${f.filename}`);
-    res.json({ urls });
 });
 
 // === CRUD GARAGES ===

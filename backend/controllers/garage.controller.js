@@ -1,6 +1,5 @@
-
+// controllers/garage.controller.js
 import Garage from "../models/garage.model.js";
-
 
 // =========================
 //  GÉOCODAGE AUTOMATIQUE
@@ -30,13 +29,20 @@ async function geocodeAddress(address) {
 // =========================
 export const createGarage = async (req, res) => {
     try {
-        const { name, address, type, places } = req.body;
+        const {
+            name,
+            address,
+            type,
+            places,
+            dimensions = "",
+            description = "",
+            photos = []
+        } = req.body;
 
         if (!name || !address || !places) {
             return res.status(400).json({ message: "Champs manquants" });
         }
 
-        // Géocodage auto
         const geo = await geocodeAddress(address);
 
         const garage = await Garage.create({
@@ -45,12 +51,16 @@ export const createGarage = async (req, res) => {
             lat: geo.lat,
             lng: geo.lng,
             type: type || "all",
-            places
+            places,
+            dimensions,
+            description,
+            photos
         });
 
         res.json(garage);
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -60,9 +70,10 @@ export const createGarage = async (req, res) => {
 // =========================
 export const getGarages = async (req, res) => {
     try {
-        const garages = await Garage.find();
+        const garages = await Garage.find().sort({ createdAt: -1 });
         res.json(garages);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -81,6 +92,7 @@ export const getGarage = async (req, res) => {
         res.json(garage);
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -90,31 +102,45 @@ export const getGarage = async (req, res) => {
 // =========================
 export const updateGarage = async (req, res) => {
     try {
-        const { name, address, type, places } = req.body;
+        const {
+            name,
+            address,
+            type,
+            places,
+            dimensions,
+            description,
+            photos
+        } = req.body;
 
-        let updateData = { name, type, places };
-
-        // Si l'adresse change → regéocodage
-        if (address) {
-            const geo = await geocodeAddress(address);
-            updateData.address = geo.formatted;
-            updateData.lat = geo.lat;
-            updateData.lng = geo.lng;
-        }
-
-        const garage = await Garage.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { new: true }
-        );
-
+        const garage = await Garage.findById(req.params.id);
         if (!garage) {
             return res.status(404).json({ message: "Garage introuvable" });
         }
 
+        if (name) garage.name = name;
+        if (typeof places !== "undefined") garage.places = places;
+        if (type) garage.type = type;
+        if (typeof dimensions !== "undefined") garage.dimensions = dimensions;
+        if (typeof description !== "undefined") garage.description = description;
+
+        // Si l'adresse change → regéocodage
+        if (address) {
+            const geo = await geocodeAddress(address);
+            garage.address = geo.formatted;
+            garage.lat = geo.lat;
+            garage.lng = geo.lng;
+        }
+
+        // 🔥 ne pas écraser si pas de nouvelles photos
+        if (Array.isArray(photos) && photos.length > 0) {
+            garage.photos = photos;
+        }
+
+        await garage.save();
         res.json(garage);
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -133,6 +159,7 @@ export const deleteGarage = async (req, res) => {
         res.json({ message: "Garage supprimé" });
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
