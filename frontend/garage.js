@@ -18,7 +18,7 @@ async function loadGarage() {
         document.getElementById("garagePlaces").innerText = "Places : " + g.places;
         document.getElementById("garageType").innerText = "Type : " + g.type;
         document.getElementById("garageDimensions").innerText = g.dimensions ? "Dimensions : " + g.dimensions : "";
-        document.getElementById("garageDescription").innerText = g.description || "";
+        document.getElementById("garageDescription").innerText = g.description || "Aucune description disponible.";
 
         const mainImage = document.getElementById("mainImage");
         const thumbContainer = document.getElementById("thumbContainer");

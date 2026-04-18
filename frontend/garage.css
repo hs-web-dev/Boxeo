@@ -51,6 +51,14 @@ body {
     box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
 }
 
+/* DESCRIPTION ORANGE BLOCK */
+.description-box {
+    margin-top: 30px;
+    width: fit-content;
+    max-width: 100%;
+    line-height: 1.5;
+}
+
 /* CONTENT */
 .garage-content {
     display: flex;
@@ -101,7 +109,7 @@ body {
     gap: 12px;
     width: 260px;
     margin-left: -40px;
-    margin-top: -70px; /* 🔥 remonté encore plus */
+    margin-top: -90px; /* 🔥 encore remonté */
 }
 
 .reserve-top-text,
@@ -134,13 +142,6 @@ body {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-}
-
-/* DESCRIPTION */
-.garage-description {
-    margin-top: 30px;
-    font-size: 1.2rem;
-    opacity: 0.9;
 }
 
 /* BACK BUTTON */
