@@ -3,9 +3,9 @@ body {
     background: #0f172a;
     color: white;
     font-family: "Inter", sans-serif;
+    overflow-x: hidden;
     padding: 40px;
     position: relative;
-    overflow-x: hidden;
 }
 
 .bg-shape {
@@ -29,36 +29,54 @@ body {
     right: -150px;
 }
 
-/* PAGE */
-.garage-container {
-    max-width: 1100px;
+/* WRAPPER */
+.garage-wrapper {
+    max-width: 1200px;
     margin: auto;
 }
 
-h1 {
-    font-size: 2.6rem;
-    margin-bottom: 10px;
+/* TITLE */
+.title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
 }
 
-.content-row {
+/* INFO LINE */
+.info-line {
+    display: flex;
+    gap: 25px;
+    opacity: 0.85;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* CONTENT */
+.garage-content {
     display: flex;
     justify-content: space-between;
-    margin-top: 40px;
+    gap: 40px;
 }
 
-/* IMAGES */
-.images-block {
+/* GALLERY */
+.gallery {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
 .main-image {
-    width: 520px;
-    height: 350px;
+    width: 600px;
+    height: 380px;
     object-fit: cover;
-    border-radius: 18px;
+    border-radius: 20px;
     background: #1e293b;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    transition: 0.3s;
+}
+
+.main-image:hover {
+    transform: scale(1.02);
 }
 
 .thumbs {
@@ -67,53 +85,56 @@ h1 {
 }
 
 .thumbs img {
-    width: 150px;
+    width: 160px;
     height: 110px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     transition: 0.25s;
     background: #1e293b;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .thumbs img:hover {
-    transform: scale(1.07);
+    transform: scale(1.08);
 }
 
 /* RESERVE BUTTON */
-.reserve-block {
+.reserve-zone {
     display: flex;
     align-items: center;
 }
 
 .reserve-btn {
-    padding: 18px 35px;
+    padding: 18px 40px;
     background: #ff6600;
     border: none;
     border-radius: 999px;
     color: white;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     cursor: pointer;
     transition: 0.25s;
+    box-shadow: 0 8px 25px rgba(255, 102, 0, 0.4);
 }
 
 .reserve-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.07);
     background: #ff7a00;
 }
 
 /* MAP */
 .garage-map {
     width: 100%;
-    height: 350px;
+    height: 380px;
     margin-top: 50px;
     border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 /* DESCRIPTION */
 .garage-description {
-    margin-top: 25px;
+    margin-top: 30px;
     font-size: 1.2rem;
     opacity: 0.9;
 }

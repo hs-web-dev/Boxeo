@@ -9,7 +9,7 @@ async function loadGarage() {
         const g = await res.json();
 
         if (!g || !g._id) {
-            document.querySelector(".garage-container").innerHTML = "<h1>Garage introuvable</h1>";
+            document.querySelector(".garage-wrapper").innerHTML = "<h1>Garage introuvable</h1>";
             return;
         }
 
@@ -30,7 +30,7 @@ async function loadGarage() {
             mainImage.src = g.photos[0];
 
             g.photos.forEach((url, index) => {
-                if (index === 0) return; // skip main image
+                if (index === 0) return;
 
                 const img = document.createElement("img");
                 img.src = url;
@@ -62,7 +62,7 @@ async function loadGarage() {
 
     } catch (err) {
         console.error(err);
-        document.querySelector(".garage-container").innerHTML = "<h1>Garage introuvable</h1>";
+        document.querySelector(".garage-wrapper").innerHTML = "<h1>Garage introuvable</h1>";
     }
 }
 

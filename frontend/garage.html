@@ -14,25 +14,28 @@
 <div class="bg-shape bg1"></div>
 <div class="bg-shape bg2"></div>
 
-<div class="garage-container">
+<div class="garage-wrapper">
 
-    <h1 id="garageName"></h1>
-    <p id="garageAddress"></p>
-    <p id="garagePlaces"></p>
-    <p id="garageType"></p>
-    <p id="garageDimensions"></p>
+    <h1 id="garageName" class="title"></h1>
 
-    <div class="content-row">
+    <div class="info-line">
+        <span id="garageAddress"></span>
+        <span id="garagePlaces"></span>
+        <span id="garageType"></span>
+        <span id="garageDimensions"></span>
+    </div>
+
+    <div class="garage-content">
 
         <!-- IMAGES -->
-        <div class="images-block">
+        <div class="gallery">
             <img id="mainImage" class="main-image" src="" alt="Garage">
 
             <div id="thumbContainer" class="thumbs"></div>
         </div>
 
         <!-- RESERVE BUTTON -->
-        <div class="reserve-block">
+        <div class="reserve-zone">
             <button id="reserveBtn" class="reserve-btn">Réserver</button>
         </div>
 
@@ -43,6 +46,7 @@
     <p id="garageDescription" class="garage-description"></p>
 
     <button onclick="goHome()" class="back-btn">Retour à l’accueil</button>
+
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
